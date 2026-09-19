@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>Configurador de sitios web | Jesús Seiler</title>
+  <meta name="description" content="Arme su sitio web en cinco minutos: elija estructura, color y tipografía, véalo en vivo y envíe el briefing. Sin compromiso.">
+  <meta name="author" content="Jesús Seiler">
+  <link rel="canonical" href="https://seiler18.github.io/configurador/">
+  <meta name="theme-color" content="#05070f">
+  <link rel="icon" type="image/webp" href="../assets/img/favicon.webp">
+
+  <!-- CSP: esta página envía a FormSubmit, así que su dominio va en
+       `connect-src` Y en `form-action`. El `'unsafe-inline'` de style-src es
+       obligatorio: la vista previa escribe variables CSS en el atributo
+       `style` en cada cambio, que es justo lo que la hace instantánea. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formsubmit.co; form-action 'self' https://formsubmit.co; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_CL">
+  <meta property="og:title" content="Configurador de sitios web | Jesús Seiler">
+  <meta property="og:description" content="Arme su sitio web en cinco minutos y envíe el briefing.">
+  <meta property="og:url" content="https://seiler18.github.io/configurador/">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- TODAS las familias del catálogo se cargan de golpe, y es deliberado:
+       la vista previa tiene que cambiar de tipografía sin parpadeo ni espera.
+       Son cinco combinaciones; pedirlas a demanda ahorraría unos KB y
+       rompería lo único que hace útil a esta página. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;800&family=Montserrat:wght@600;800&family=Open+Sans:wght@400;600&family=Playfair+Display:wght@600;800&family=Lato:wght@400;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=Bitter:wght@600;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="configurador.css">
+</head>
+
+<body>
+  <a class="saltar" href="#formulario">Saltar al formulario</a>
+
+  <header class="cabecera">
+    <a class="marca" href="../">
+      <img src="../assets/img/avatar.webp" alt="Foto de Jesús Seiler" width="36" height="36">
+      <span>Jesús Seiler</span>
+    </a>
+    <p class="cabecera-titulo">Configurador de sitios</p>
+  </header>
+
+  <main class="lienzo">
+
+    <!-- ============ COLUMNA IZQUIERDA: EL FORMULARIO ============ -->
+    <div class="columna-form">
+      <div class="intro">
+        <p class="eyebrow">Cinco minutos, sin compromiso</p>
+        <h1>Arme su sitio y véalo mientras lo hace</h1>
+        <p class="intro-texto">
+          Conteste lo que sepa y deje en blanco lo que no. Al terminar se genera
+          un <strong>briefing</strong> —el documento con el que se construye el
+          sitio— y me llega a mí. Le respondo con un precio cerrado, no con una
+          bolsa de horas.
+        </p>
+        <p class="intro-nota">
+          Lo que elija aquí no se guarda en ningún servidor mientras rellena:
+          vive en su navegador hasta que pulse enviar.
+        </p>
+      </div>
+
+      <form id="formulario" novalidate>
+
+        <!-- ---------- 1. EL PROYECTO ---------- -->
+        <section class="paso" aria-labelledby="p1">
+          <h2 id="p1"><span class="paso-num">1</span> El proyecto</h2>
+
+          <label class="campo">
+            <span class="campo-label">Nombre de la organización <b>*</b></span>
+            <input type="text" name="nombre" id="f-nombre" required
+                   placeholder="Transportes del Sur SpA" autocomplete="organization">
+          </label>
+
+          <div class="campo-fila">
+            <label class="campo">
+              <span class="campo-label">Nombre corto</span>
+              <span class="campo-ayuda">Para la cabecera en móvil</span>
+              <input type="text" name="nombre_corto" id="f-corto" placeholder="Transur" maxlength="20">
+            </label>
+            <label class="campo">
+              <span class="campo-label">Lema</span>
+              <span class="campo-ayuda">Una frase de marca, sin comillas</span>
+              <input type="text" name="lema" id="f-lema" placeholder="Llegamos donde no llega nadie" maxlength="70">
+            </label>
+          </div>
+
+          <label class="campo">
+            <span class="campo-label">¿A qué se dedican? <b>*</b></span>
+            <span class="campo-ayuda">Dos o tres frases, tal como se lo explicaría a alguien en la calle.</span>
+            <textarea name="actividad" id="f-actividad" rows="3" required
+              placeholder="Transporte de carga refrigerada entre Puerto Montt y Santiago. Trabajamos con salmoneras y con dos cadenas de supermercados."></textarea>
+          </label>
+
+          <label class="campo">
+            <span class="campo-label">¿Quién tiene que entrar al sitio?</span>
+            <span class="campo-ayuda">Cuanto más concreto, mejor sale el texto. «Todo el mundo» no ayuda.</span>
+            <textarea name="publico" id="f-publico" rows="2"
+              placeholder="Jefes de logística de empresas medianas que hoy contratan a un competidor más caro."></textarea>
+          </label>
+
+          <label class="campo">
+            <span class="campo-label">Si el sitio funciona, ¿qué habrá pasado?</span>
+            <span class="campo-ayuda">Es la pregunta que decide todo lo demás.</span>
+            <select name="objetivo" id="f-objetivo">
+              <option value="">Elija una…</option>
+              <option>Que me escriban y pidan cotización</option>
+              <option>Que me encuentren en Google cuando buscan lo que hago</option>
+              <option>Que dejen de preguntarme lo mismo por teléfono</option>
+              <option>Que se vea serio cuando me postulo a una licitación</option>
+              <option>Que pueda mandar un enlace en vez de un PDF</option>
+              <option>Otra cosa (la explico más abajo)</option>
+            </select>
+          </label>
+        </section>
+
+        <!-- ---------- 2. LAS SECCIONES ---------- -->
+        <section class="paso" aria-labelledby="p2">
+          <h2 id="p2"><span class="paso-num">2</span> Qué lleva el sitio</h2>
+          <p class="paso-ayuda">
+            Portada y contacto van siempre. Del resto, marque lo que tenga
+            contenido de verdad: una sección vacía se nota más que su ausencia.
+          </p>
+          <ul class="secciones" id="f-secciones"></ul>
+          <p class="aviso" id="aviso-secciones" hidden>
+            Con más de siete secciones la barra superior se aprieta y los
+            enlaces se parten. Con esta cantidad conviene la columna lateral.
+          </p>
+        </section>
+
+        <!-- ---------- 3. EL ASPECTO ---------- -->
+        <section class="paso" aria-labelledby="p3">
+          <h2 id="p3"><span class="paso-num">3</span> Cómo se ve</h2>
+          <p class="paso-ayuda">Mire la vista previa mientras elige. Nada de esto es definitivo.</p>
+
+          <fieldset class="grupo">
+            <legend>Navegación</legend>
+            <div class="opciones" id="f-armazon"></div>
+          </fieldset>
+
+          <fieldset class="grupo">
+            <legend>Color</legend>
+            <div class="paletas" id="f-paletas"></div>
+          </fieldset>
+
+          <fieldset class="grupo">
+            <legend>Tipografía</legend>
+            <div class="opciones" id="f-tipografias"></div>
+          </fieldset>
+        </section>
+
+        <!-- ---------- 4. LO QUE YA TIENE ---------- -->
+        <section class="paso" aria-labelledby="p4">
+          <h2 id="p4"><span class="paso-num">4</span> Qué tiene ya</h2>
+          <p class="paso-ayuda">
+            Esto cambia el plazo más que ninguna otra respuesta. Un sitio sin
+            textos no se atasca en el diseño: se atasca esperando los textos.
+          </p>
+          <ul class="tiene" id="f-tiene"></ul>
+
+          <div class="campo-fila">
+            <label class="campo">
+              <span class="campo-label">Correo donde deben llegar los mensajes del sitio</span>
+              <input type="email" name="correo_sitio" id="f-correo-sitio" placeholder="contacto@empresa.cl">
+            </label>
+            <label class="campo">
+              <span class="campo-label">WhatsApp del sitio</span>
+              <span class="campo-ayuda">Sin signos: 56912345678. Vacío = sin botón.</span>
+              <input type="tel" name="whatsapp_sitio" id="f-whatsapp-sitio" placeholder="56912345678" inputmode="numeric">
+            </label>
+          </div>
+
+          <label class="campo">
+            <span class="campo-label">¿Para cuándo lo necesita?</span>
+            <select name="plazo" id="f-plazo">
+              <option value="">Sin fecha concreta</option>
+              <option>Hay una fecha: una licitación, una feria, una inauguración</option>
+              <option>Este mes</option>
+              <option>En dos o tres meses</option>
+              <option>Estoy explorando, todavía no decido</option>
+            </select>
+          </label>
+
+          <label class="campo">
+            <span class="campo-label">Algo más que deba saber</span>
+            <textarea name="extra" id="f-extra" rows="3"
+              placeholder="Sitios que le gustan, cosas que odia, un color de la marca, lo que salió mal la última vez que encargó una web…"></textarea>
+          </label>
+        </section>
+
+        <!-- ---------- 5. QUIÉN ENVÍA ---------- -->
+        <section class="paso" aria-labelledby="p5">
+          <h2 id="p5"><span class="paso-num">5</span> Cómo le respondo</h2>
+
+          <div class="campo-fila">
+            <label class="campo">
+              <span class="campo-label">Su nombre <b>*</b></span>
+              <input type="text" name="contacto_nombre" id="f-cnombre" required autocomplete="name">
+            </label>
+            <label class="campo">
+              <span class="campo-label">Su correo <b>*</b></span>
+              <input type="email" name="contacto_correo" id="f-ccorreo" required autocomplete="email">
+            </label>
+          </div>
+
+          <label class="campo">
+            <span class="campo-label">Teléfono</span>
+            <span class="campo-ayuda">Opcional, solo si prefiere que le llame.</span>
+            <input type="tel" name="contacto_tel" id="f-ctel" autocomplete="tel">
+          </label>
+
+          <!-- Trampa para robots. Un campo que una persona no ve y no rellena:
+               si llega con contenido, el envío se descarta en silencio. Es el
+               mecanismo que recomienda el propio FormSubmit (_honey). -->
+          <div class="colmena" aria-hidden="true">
+            <label>No rellene este campo
+              <input type="text" name="_honey" tabindex="-1" autocomplete="off">
+            </label>
+          </div>
+
+          <div class="acciones">
+            <button type="submit" class="btn primario" id="btn-enviar">Enviar el briefing</button>
+            <button type="button" class="btn fantasma" id="btn-descargar">Descargar el briefing</button>
+          </div>
+
+          <p class="estado" id="estado" role="status" aria-live="polite"></p>
+
+          <p class="legal">
+            Sus datos se usan para responderle esta consulta y nada más: no hay
+            lista de correo, no hay analítica y no se comparten con nadie. El
+            envío viaja por <strong>FormSubmit</strong>, el mismo servicio que
+            usa el formulario de mi currículum.
+          </p>
+        </section>
+      </form>
+    </div>
+
+    <!-- ============ COLUMNA DERECHA: LA VISTA PREVIA ============ -->
+    <aside class="columna-vista" aria-label="Vista previa del sitio">
+      <div class="vista-sticky">
+        <div class="vista-barra">
+          <span class="vista-puntos" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="vista-url" id="vista-url">su-empresa.cl</span>
+          <div class="vista-tamanos" role="group" aria-label="Tamaño de pantalla">
+            <button type="button" class="activo" data-tam="escritorio" aria-pressed="true">Escritorio</button>
+            <button type="button" data-tam="movil" aria-pressed="false">Móvil</button>
+          </div>
+        </div>
+
+        <!-- La maqueta NO es un iframe con el sitio real: es una miniatura que
+             usa los MISMOS tokens. Un iframe obligaría a compilar un sitio por
+             cada cambio de color, que es exactamente lo que esta página existe
+             para evitar. -->
+        <div class="vista-marco" id="vista-marco">
+          <div class="maqueta" id="maqueta"></div>
+        </div>
+
+        <p class="vista-pie">
+          Es una maqueta, no el sitio terminado: da el color, la tipografía y la
+          estructura. El acabado —animaciones, detalle, imágenes— se trabaja
+          después, sobre contenido real.
+        </p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="pie">
+    <p>
+      <a href="../">Jesús Seiler</a> ·
+      <a href="../sistemas-gestion/">Sistemas de gestión ISO</a> ·
+      <a href="https://github.com/seiler18/WebMaker" target="_blank" rel="noopener noreferrer">Cómo se construyen estos sitios</a>
+    </p>
+  </footer>
+
+  <script type="module" src="configurador.js"></script>
+</body>
+</html>
