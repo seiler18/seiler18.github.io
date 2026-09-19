@@ -1,0 +1,840 @@
+/* ============================================================
+   COMPONENTES — hero, botones, tarjetas, bloques, formulario, pie, modal
+
+   Todo lo que se repite en más de una sección. Si un estilo solo lo usa una
+   sección concreta, tiene más sentido dejarlo junto a ella.
+
+   Dos reglas de este archivo, además de las de tokens.css:
+
+   · TODO `:hover` va dentro de un `@media (hover: hover)`. En pantalla táctil
+     el hover se aplica al tocar y se queda pegado hasta el siguiente toque
+     (trampas.md 22). Lo que responde al dedo es `:active`, que sí está fuera.
+   · El movimiento sale de los tokens (--rapido/--medio/--lento y las curvas).
+     Duraciones a mano es cómo se llega a que dos fichas vecinas respondan a
+     distinta velocidad.
+   ============================================================ */
+
+/* ----------------------- ANIMACIÓN DE ENTRADA -----------------------
+   Estado inicial de [data-anim]; src/lib/reveal.js añade .anim-visible al
+   entrar en pantalla. Si el JS fallara, el contenido quedaría invisible, así
+   que reveal.js marca todo como visible también cuando no puede observar.
+
+   Cuatro variantes, y la elección no es decorativa: el movimiento tiene que
+   apuntar hacia donde el contenido «viene». Lo que sube (`subir`) se lee como
+   contenido que entra al leer hacia abajo; lo que aparece sin moverse
+   (`aparecer`) es para lo que ya está en su sitio y solo tiene que llegar
+   —un titular, una foto—; `escala` es para lo que quiere sentirse cercano;
+   `lateral`, para lo que acompaña a un texto. Con las cuatro a la vez en la
+   misma pantalla no se percibe ritmo, se percibe ruido: una por sección. */
+[data-anim] {
+  opacity: 0;
+  transition:
+    opacity var(--lento) var(--curva-salida),
+    transform var(--lento) var(--curva-salida);
+}
+[data-anim="subir"]    { transform: translateY(18px); }
+[data-anim="aparecer"] { transform: none; }
+[data-anim="escala"]   { transform: scale(0.96); }
+[data-anim="lateral"]  { transform: translateX(-24px); }
+
+[data-anim].anim-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-anim] { opacity: 1; transform: none; }
+}
+
+/* ----------------------- PORTADA ----------------------- */
+.hero {
+  position: relative;
+  /* `isolate` contiene las capas de z-index negativo del fondo. Sin él se
+     colarían por debajo del fondo de la página y no se verían. */
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: min(88vh, 780px);
+  padding: 4rem 1.5rem 5rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-fondo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: transparent;
+
+  /* DESVANECIDO INFERIOR. No es decoración: sin esto se ve una LÍNEA RECTA
+     separando la portada de la primera sección.
+     El .hero tiene `overflow: hidden`, así que las luces y la rejilla se
+     cortan en seco en su borde inferior, y ese canto se lee como una franja
+     que parte la página en dos zonas.
+     La máscara va AQUÍ, en el contenedor, y no en cada pseudo-elemento, por
+     dos razones: recorta de una vez todo lo que pintan el ::before y el
+     ::after, y esta caja mide exactamente lo que mide el hero y NO SE MUEVE —
+     las de los pseudos llevan `transform`, así que el punto de desvanecido
+     bailaría con la animación.
+     Del 58% al 100% el fondo se apaga hasta transparente, de modo que a los
+     dos lados del canto hay exactamente el mismo color.
+     Cuidado: `mask` crea un contexto de apilamiento. Aquí es inofensivo (es un
+     div de fondo, sin contenido interactivo), pero no la muevas a un ancestro
+     del modal — referencia/trampas.md, punto 4. */
+  mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+}
+
+/* LUCES EN MOVIMIENTO.
+   Van en su propio pseudo-elemento, y no en el `background` del .hero-fondo,
+   para animarlas con `transform`: lo mueve el compositor y no repinta los
+   degradados en cada fotograma.
+
+   El pseudo es más grande que el hero (`inset: -30%`) para que al desplazarse
+   no aparezca ningún borde vacío.
+
+   Tres focos y con los brillos intensos (--brillo-movil*): con dos focos y los
+   brillos tenues el movimiento existe pero NO SE PERCIBE, que es lo mismo que
+   no tenerlo. El tercero, abajo, es el que mueve la mitad inferior.
+
+   Se detiene solo con `prefers-reduced-motion` (regla global en base.css). */
+.hero-fondo::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background:
+    radial-gradient(680px circle at 22% 25%, var(--brillo-movil), transparent 62%),
+    radial-gradient(560px circle at 80% 68%, var(--brillo-movil-acento), transparent 58%),
+    radial-gradient(620px circle at 45% 95%, var(--brillo-movil-frio), transparent 60%);
+  animation: luces-hero var(--ciclo-luces) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Recorrido amplio a propósito. Si se sube mucho más, el borde del pseudo
+   entra en cuadro incluso con el `inset: -30%`. */
+@keyframes luces-hero {
+  0%   { transform: translate3d(-7%, -5%, 0) scale(1); }
+  35%  { transform: translate3d(6%, 3%, 0) scale(1.16); }
+  70%  { transform: translate3d(9%, 8%, 0) scale(1.08); }
+  100% { transform: translate3d(-4%, 9%, 0) scale(1.22); }
+}
+
+/* REJILLA TÉCNICA. Da textura sin competir con el texto, y deriva despacio.
+   Se anima `background-position` y NO `transform`: la rejilla es un patrón que
+   se repite cada 54px, así que desplazarlo exactamente 54px deja el dibujo
+   igual que al empezar y el bucle es invisible. Con `transform` se movería
+   también su máscara radial y se vería entrar el borde del recuadro.
+   `linear` y no `ease`: una rejilla que acelera y frena se lee como un fallo
+   de rendimiento. Cada capa (horizontales y verticales) necesita su propia
+   posición, de ahí los dos valores separados por coma. */
+.hero-fondo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--borde) 1px, transparent 1px),
+    linear-gradient(90deg, var(--borde) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: radial-gradient(circle at 50% 40%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 50% 40%, #000 30%, transparent 75%);
+  animation: rejilla-deriva var(--ciclo-rejilla) linear infinite;
+}
+
+@keyframes rejilla-deriva {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 54px 54px, 54px 54px; }
+}
+
+.hero-contenido { max-width: 900px; }
+
+.hero-antetitulo {
+  margin: 0 0 1rem;
+  font-size: var(--txt-menudo);
+  font-weight: 700;
+  letter-spacing: var(--tracking-antetitulo);
+  text-transform: uppercase;
+  color: var(--acento);
+}
+.hero-titulo {
+  margin: 0;
+  font-size: var(--txt-t1);
+  line-height: var(--interlinea-display);
+  letter-spacing: var(--tracking-display);
+  /* Ancho de medida para que el nombre no se estire en una sola línea
+     kilométrica en un monitor ancho: dos líneas centradas y equilibradas
+     (`text-wrap: balance`, en base.css) se leen de un golpe de vista. */
+  max-width: var(--medida-titular);
+  margin-inline: auto;
+  /* Arranca en blanco, no en el primario claro: el título cae justo encima de
+     las luces del fondo y con el degradado de los títulos de sección se
+     fundía con ellas. */
+  background: linear-gradient(160deg, #ffffff 0%, var(--primario-claro) 55%, var(--acento) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* CONTORNO — tiene que ser `filter: drop-shadow`, NO `text-shadow`.
+     Ver la explicación completa en .section-title (layout.css): con
+     `-webkit-text-fill-color: transparent` el glifo no tiene relleno y una
+     text-shadow se ve atravesando la letra. */
+  filter:
+    drop-shadow(0 0 2px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 4px 12px rgba(0, 0, 0, 0.7));
+}
+.hero-lema {
+  margin: 0.6rem 0 0;
+  font-size: var(--txt-guia);
+  font-weight: 700;
+  color: var(--primario-claro);
+  /* Este sí lleva relleno, así que aquí `text-shadow` es lo correcto. */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+.hero-bajada {
+  /* La medida en `ch` y no en px: el largo cómodo de línea depende del tamaño
+     de letra, y este texto crece con la pantalla. */
+  max-width: var(--medida-guia);
+  margin: 1.5rem auto 0;
+  font-size: var(--txt-guia);
+  line-height: var(--interlinea-guia);
+  color: var(--texto);
+}
+
+.hero-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-top: 2.2rem;
+}
+
+.hero-cinta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem 2.5rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--borde);
+}
+.hero-cinta-dato {
+  display: block;
+  font-family: var(--fuente-titulos);
+  font-size: var(--txt-cifra);
+  font-weight: 800;
+  color: var(--acento);
+  line-height: var(--interlinea-display);
+}
+.hero-cinta-pie {
+  font-size: var(--txt-micro);
+  color: var(--texto-tenue);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-etiqueta);
+}
+
+/* Indicador de «hay más abajo» */
+.hero-scroll {
+  position: absolute;
+  bottom: 1.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  color: var(--texto-tenue);
+  animation: hero-latido var(--ciclo-latido) ease-in-out infinite;
+}
+@keyframes hero-latido {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ----------------------- BOTONES ----------------------- */
+.btn,
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--fuente-texto);
+  font-size: var(--txt-ui);
+  font-weight: 700;
+  cursor: pointer;
+  /* Quita el retardo de ~300ms que algunos navegadores móviles esperan por si
+     el toque era un doble toque para hacer zoom. Es la diferencia entre un
+     botón que responde y uno que «va lento» sin que nada esté lento. */
+  touch-action: manipulation;
+  transition:
+    transform var(--rapido) var(--curva-salida),
+    box-shadow var(--medio) var(--curva-salida),
+    background-color var(--medio) var(--curva-suave),
+    color var(--medio) var(--curva-suave);
+}
+.btn.primario,
+.hero-btn.primario {
+  /* --degradado-solido y no --degradado: aqui hay texto blanco encima.
+     Ver el comentario de los degradados en tokens.css. */
+  background: var(--degradado-solido);
+  color: #fff;
+}
+.btn.fantasma,
+.hero-btn.fantasma {
+  background: var(--superficie-velada);
+  border: 1px solid var(--borde-vivo);
+  color: var(--acento);
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ACUSE DE RECIBO DE LA PULSACIÓN. Fuera del `@media (hover)` a propósito:
+   esto es lo único que responde en una pantalla táctil, donde no hay hover, y
+   es lo que hace que pulsar se sienta como pulsar y no como esperar. Va con
+   --rapido: por encima de 150ms el botón se hunde DESPUÉS de que el dedo ya
+   se ha levantado. */
+.btn:active:not(:disabled),
+.hero-btn:active {
+  transform: translateY(var(--hunde)) scale(0.985);
+  box-shadow: none;
+}
+
+/* Enlace-botón discreto, para dentro de una tarjeta */
+.btn-linea {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--txt-ui);
+  font-weight: 700;
+}
+.btn-linea i {
+  font-size: var(--icono-menudo);
+  transition: transform var(--medio) var(--curva-salida);
+}
+
+.btn-descarga {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--borde-vivo);
+  border-radius: var(--radio-sm);
+  background: var(--superficie-velada);
+  color: var(--texto);
+  font-size: var(--txt-menudo);
+  font-weight: 700;
+  touch-action: manipulation;
+  transition:
+    border-color var(--medio) var(--curva-suave),
+    box-shadow var(--medio) var(--curva-salida),
+    color var(--medio) var(--curva-suave),
+    transform var(--rapido) var(--curva-salida);
+}
+.btn-descarga:active { transform: translateY(var(--hunde)); }
+
+@media (hover: hover) {
+  .btn.primario:hover,
+  .hero-btn.primario:hover {
+    color: #fff;
+    transform: translateY(var(--levanta));
+    box-shadow: 0 0 24px var(--brillo-acento);
+  }
+  .btn.fantasma:hover,
+  .hero-btn.fantasma:hover {
+    background: var(--surface-2);
+    transform: translateY(var(--levanta));
+  }
+  /* La flecha se adelanta: dice hacia dónde lleva el enlace antes de pulsarlo.
+     3px son suficientes; con 8px parece que se va a salir de la tarjeta. */
+  .btn-linea:hover i { transform: translateX(3px); }
+
+  .btn-descarga:hover {
+    color: var(--texto-fuerte);
+    border-color: var(--acento);
+    box-shadow: 0 0 18px var(--brillo-acento);
+    transform: translateY(var(--levanta));
+  }
+
+  .hero-scroll:hover { color: var(--acento); border-color: var(--borde-vivo); }
+}
+
+/* ----------------------- BLOQUE DE TEXTO ----------------------- */
+.bloque-dos-columnas {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: center;
+  gap: 3rem;
+}
+/* Invierte el orden VISUAL sin tocar el del HTML: quien navega con teclado o
+   lector de pantalla recorre siempre texto → imagen. */
+.bloque-dos-columnas[data-lado="izquierda"] .bloque-figura { order: -1; }
+
+/* La prosa va en el tamaño de lectura (--txt-guia, 18px) y no en el del
+   cuerpo: es el texto por el que el visitante se entera de a qué se dedica el
+   cliente, y 16px con 1.65 de interlineado en una columna ancha se lee como
+   documentación, no como una presentación. */
+.bloque-texto { font-size: var(--txt-guia); }
+.bloque-texto.centrado {
+  max-width: var(--medida-cuerpo);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.bloque-figura { margin: 0; }
+.bloque-figura img {
+  width: 100%;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+.bloque-figura figcaption {
+  margin-top: 0.6rem;
+  font-size: var(--txt-menudo);
+  color: var(--texto-tenue);
+  text-align: center;
+}
+
+/* Fila de destacados (misión, visión, valores…) */
+.destacados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+.destacado {
+  display: flex;
+  gap: 0.9rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.destacado i {
+  flex-shrink: 0;
+  font-size: var(--icono-grande);
+  color: var(--acento);
+  filter: drop-shadow(0 0 10px var(--brillo-acento));
+}
+.destacado strong { display: block; margin-bottom: 0.25rem; }
+.destacado p { margin: 0; font-size: var(--txt-ui); color: var(--texto-tenue); }
+
+/* ----------------------- REJILLA DE TARJETAS -----------------------
+   `auto-fill` + `minmax`: tantas columnas como caben y una sola en móvil,
+   sin una media query propia. Es la razón por la que aquí no hay carrusel:
+   nada que igualar de alto, nada que tape los botones. */
+.rejilla {
+  display: grid;
+  gap: 1.25rem;
+}
+.rejilla[data-densidad="amplia"]   { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+.rejilla[data-densidad="compacta"] { grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); }
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+
+/* ----------------------- HOVER COMÚN DE TODAS LAS FICHAS -----------------------
+   UNA SOLA REGLA para los dos componentes que presentan fichas: las tarjetas
+   de una rejilla (.tarjeta) y los destacados de un bloque (.destacado).
+
+   En el primer sitio hecho con esta plantilla solo reaccionaban las tarjetas,
+   así que la mitad de las fichas del sitio parecía interactiva y la otra mitad
+   no. El cliente lo notó antes que nadie.
+
+   Están juntas a propósito: si el hover de una se retoca, se retoca el de
+   todas. Separarlas es exactamente cómo se llega a que dos rejillas del mismo
+   sitio se comporten distinto. */
+.tarjeta,
+.destacado {
+  transition:
+    transform var(--medio) var(--curva-salida),
+    box-shadow var(--medio) var(--curva-salida),
+    border-color var(--medio) var(--curva-suave),
+    background-color var(--medio) var(--curva-suave);
+}
+.tarjeta-icono,
+.destacado i {
+  transition:
+    transform var(--medio) var(--curva-salida),
+    filter var(--medio) var(--curva-salida);
+}
+
+@media (hover: hover) {
+  .tarjeta:hover,
+  .destacado:hover {
+    transform: translateY(var(--levanta-ficha));
+    border-color: var(--borde-vivo);
+    background-color: var(--superficie-viva);
+    /* La sombra negra hace el trabajo de despegar la ficha del fondo; `--brillo`
+       a secas queda casi invisible sobre un fondo oscuro. El borde interior
+       remata el contorno sin mover el layout (un `border` más grueso sí lo
+       movería). */
+    box-shadow:
+      var(--sombra-alta),
+      0 0 0 1px var(--borde-vivo) inset,
+      0 10px 30px var(--brillo);
+  }
+
+  /* El icono acompaña: sin esto el movimiento se siente solo en el marco. */
+  .tarjeta:hover .tarjeta-icono,
+  .destacado:hover i {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 14px var(--brillo-acento));
+  }
+}
+
+/* En pantalla táctil no hay hover, pero la ficha sí puede acusar el toque.
+   Solo si es pulsable: una tarjeta sin enlace que se hunde al tocarla promete
+   algo que no va a pasar. */
+.tarjeta:has(a):active,
+.destacado:has(a):active {
+  transform: translateY(var(--hunde));
+  border-color: var(--borde-vivo);
+}
+
+/* El teclado tiene que ver lo mismo que el ratón: una ficha con enlace recibe
+   foco y sin esto no pasaba nada visible. */
+.tarjeta:focus-within,
+.destacado:focus-within {
+  border-color: var(--borde-vivo);
+  background-color: var(--superficie-viva);
+}
+/* El filtro usa el atributo `hidden`; sin esto el `display: flex` de arriba
+   ganaría en especificidad y la tarjeta oculta seguiría viéndose. */
+.tarjeta[hidden] { display: none; }
+
+/* Alto fijo de portada para que la rejilla quede alineada aunque las
+   imágenes lleguen en proporciones distintas. */
+.tarjeta-portada { height: 168px; background: var(--surface-2); overflow: hidden; }
+.tarjeta-portada img { width: 100%; height: 100%; object-fit: cover; }
+
+.tarjeta-icono {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 1.25rem 1.25rem 0;
+  border-radius: var(--radio-sm);
+  background: var(--primario-tenue);
+  border: 1px solid var(--borde);
+}
+.tarjeta-icono i {
+  font-size: var(--icono-grande);
+  color: var(--acento);
+  filter: drop-shadow(0 0 10px var(--brillo-acento));
+}
+
+.tarjeta-cuerpo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.25rem;
+}
+/* Título 18px / texto 15px. El salto tiene que ser visible sin leer: con
+   1.08rem y 0.94rem (lo que había antes) los dos textos se veían del mismo
+   tamaño y la tarjeta no tenía jerarquía, solo dos párrafos. */
+.tarjeta-titulo { margin: 0 0 0.5rem; font-size: var(--txt-guia); }
+.tarjeta-texto { margin: 0; font-size: var(--txt-ui); color: var(--texto-tenue); }
+/* `margin-top: auto` empuja la acción al fondo → todos los enlaces de la
+   fila quedan a la misma altura aunque los textos ocupen 1 o 3 líneas. */
+.tarjeta-accion { margin: auto 0 0; padding-top: 1rem; }
+
+.rejilla-vacia { margin-top: 2rem; text-align: center; color: var(--texto-tenue); }
+
+/* ----------------------- FILTROS ----------------------- */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--superficie-velada);
+  color: var(--texto-tenue);
+  font-family: inherit;
+  font-size: var(--txt-ui);
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    color var(--medio) var(--curva-suave),
+    border-color var(--medio) var(--curva-suave),
+    background var(--medio) var(--curva-suave),
+    box-shadow var(--medio) var(--curva-salida),
+    transform var(--rapido) var(--curva-salida);
+}
+.filtro:active { transform: scale(0.96); }
+.filtro.is-active {
+  color: var(--texto-fuerte);
+  background: var(--primario-tenue-fuerte);
+  border-color: var(--acento);
+  box-shadow: 0 0 16px var(--brillo);
+}
+.filtro-cuenta {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: var(--txt-micro);
+  font-weight: 700;
+}
+.filtro.is-active .filtro-cuenta { background: var(--degradado-solido); color: #fff; }
+
+@media (hover: hover) {
+  .filtro:hover { color: var(--texto-fuerte); border-color: var(--borde-vivo); }
+}
+
+/* ----------------------- CONTACTO ----------------------- */
+.contacto-columnas {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.contacto-form {
+  padding: 1.75rem;
+  background: var(--surface);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+
+/* auto-fit + minmax: dos columnas cuando caben y una sola cuando no. */
+.contacto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0 1rem;
+}
+.contacto-grid .campo-ancho { grid-column: 1 / -1; }
+
+.campo { margin-bottom: 1rem; }
+.campo label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: var(--txt-menudo);
+  font-weight: 600;
+  color: var(--texto-tenue);
+}
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  background: var(--surface-2);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-sm);
+  font-family: inherit;
+  /* En móvil sube a 16px (responsive.css, bloque `pointer: coarse`): por
+     debajo de eso Safari de iOS hace zoom al enfocar el campo y deja el
+     formulario descuadrado a media pantalla. */
+  font-size: var(--txt-ui);
+  transition:
+    border-color var(--rapido) var(--curva-suave),
+    box-shadow var(--rapido) var(--curva-salida);
+}
+.campo textarea { resize: vertical; min-height: 110px; }
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: none;
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px var(--brillo);
+}
+.campo ::placeholder { color: var(--texto-marca); }
+
+/* La trampa para bots NO se oculta con display:none: algunos bots ignoran
+   los campos ocultos así. Del teclado y del lector de pantalla ya se
+   encargan tabindex y aria-hidden en el HTML. */
+.campo-trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.contacto-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+.contacto-acciones .btn { flex: 1 1 200px; }
+
+/* El aviso arranca oculto pero ocupando su sitio: así al aparecer no empuja
+   el pie hacia abajo (y con él el scroll-spy). */
+.contacto-aviso {
+  min-height: 1.4em;
+  margin: 1rem 0 0;
+  font-size: var(--txt-ui);
+  opacity: 0;
+  transition: opacity var(--medio) var(--curva-suave);
+}
+.contacto-aviso.visible { opacity: 1; }
+.contacto-aviso.ok    { color: var(--ok); }
+.contacto-aviso.malo  { color: var(--error); }
+.contacto-aviso.nota  { color: var(--texto-tenue); }
+
+.contacto-datos {
+  padding: 1.75rem;
+  background: var(--surface-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.contacto-datos h3 { font-size: var(--txt-guia); }
+.canales { display: flex; flex-direction: column; gap: 1.1rem; }
+.canales li { display: flex; gap: 0.8rem; align-items: flex-start; }
+.canales i {
+  flex-shrink: 0;
+  width: 1.4rem;
+  margin-top: 0.2rem;
+  color: var(--acento);
+  text-align: center;
+}
+.canal-etiqueta {
+  display: block;
+  font-size: var(--txt-micro);
+  font-weight: 700;
+  letter-spacing: var(--tracking-etiqueta);
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+/* ----------------------- PIE ----------------------- */
+.pie {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--borde);
+  background: var(--velo);
+}
+.pie-inner {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 2.5rem;
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: 0 1.5rem 2.5rem;
+}
+.pie h2 {
+  font-size: var(--txt-menudo);
+  font-weight: 700;
+  letter-spacing: var(--tracking-antetitulo);
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+.pie-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: var(--txt-guia);
+  font-weight: 800;
+  color: var(--texto-fuerte);
+}
+.pie-lema { margin: 0.3rem 0 0; color: var(--texto-tenue); font-size: var(--txt-ui); }
+.pie-dato { margin: 0.8rem 0 0; font-size: var(--txt-ui); }
+
+.pie-nav ul { display: flex; flex-direction: column; gap: 0.4rem; }
+.pie-nav a { color: var(--texto-tenue); font-size: var(--txt-ui); }
+
+.pie-redes-lista { display: flex; flex-direction: column; gap: 0.5rem; }
+.pie-redes-lista a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--texto-tenue);
+  font-size: var(--txt-ui);
+}
+
+@media (hover: hover) {
+  .pie-nav a:hover,
+  .pie-redes-lista a:hover { color: var(--acento); }
+}
+
+.pie-legal {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--borde);
+  text-align: center;
+  font-size: var(--txt-menudo);
+  color: var(--texto-tenue);
+}
+
+/* ----------------------- MODAL -----------------------
+   <dialog> nativo: el navegador da el foco atrapado, el cierre con Escape y
+   el fondo inerte. src/lib/modal.js solo lo abre y lo mueve a <body>. */
+dialog.modal {
+  max-width: min(720px, calc(100vw - 2rem));
+  max-height: calc(100vh - 4rem);
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: visible;
+}
+dialog.modal::backdrop {
+  background: var(--velo-modal);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.modal-caja {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 4rem);
+  background: var(--surface);
+  border: 1px solid var(--borde-vivo);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+.modal-cabecera,
+.modal-pie {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--borde);
+}
+.modal-pie { border-bottom: none; border-top: 1px solid var(--borde); justify-content: flex-end; }
+.modal-cabecera h2 { margin: 0; font-size: var(--txt-guia); }
+.modal-cuerpo { padding: 1.25rem; overflow-y: auto; }
+.modal-cerrar {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  background: none;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  color: var(--texto-tenue);
+  font-size: var(--icono-medio);
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    color var(--medio) var(--curva-suave),
+    border-color var(--medio) var(--curva-suave),
+    transform var(--rapido) var(--curva-salida);
+}
+.modal-cerrar:active { transform: scale(0.92); }
+
+@media (hover: hover) {
+  .modal-cerrar:hover { color: var(--texto-fuerte); border-color: var(--borde-vivo); }
+}
