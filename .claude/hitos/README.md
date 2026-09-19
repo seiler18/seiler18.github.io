@@ -18,3 +18,4 @@ No se duplica información entre ellos. Para añadir un hito, ver la skill
 
 | # | Fecha | Título | Estado |
 |---|---|---|---|
+| [0001](0001-hub-y-configurador.md) | 2026-09-19 | El hub y el configurador de sitios | completado |
