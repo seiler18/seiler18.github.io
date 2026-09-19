@@ -20,6 +20,10 @@ import { site } from '../src/data/site.js'
 const carpetas = [
   'assets/img',
   'assets/docs',
+  // El configurador es una página estática: no la importa nadie desde
+  // src/main.js, así que Vite ni la ve. Sin esta línea se publica el hub
+  // y /configurador/ da 404.
+  'configurador',
 ]
 
 /* Archivos sueltos de la raíz que también deben estar en dist/
@@ -78,12 +82,26 @@ const hoy = new Date().toISOString().slice(0, 10)
 if (site.url && !site.url.includes('{{')) {
   const url = site.url.endsWith('/') ? site.url : site.url + '/'
 
+  /* Páginas estáticas que también deben salir en el sitemap. La portada va
+     siempre y no se declara aquí. SI SE AÑADE UNA PÁGINA SUELTA, VA EN ESTE
+     ARRAY: es el único sitio que lo sabe. */
+  const paginas = [
+    { ruta: 'configurador/', prioridad: '0.8' },
+  ]
+
   writeFileSync(
     join('dist', 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
       `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
       `  <url>\n    <loc>${url}</loc>\n    <lastmod>${hoy}</lastmod>\n` +
       `    <priority>1.0</priority>\n  </url>\n` +
+      paginas
+        .map(
+          p =>
+            `  <url>\n    <loc>${url}${p.ruta}</loc>\n    <lastmod>${hoy}</lastmod>\n` +
+            `    <priority>${p.prioridad}</priority>\n  </url>\n`
+        )
+        .join('') +
       `</urlset>\n`
   )
   console.log('✓ generado dist/sitemap.xml')

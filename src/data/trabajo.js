@@ -38,9 +38,9 @@ export const trabajo = {
     {
       titulo: 'Sitios web',
       texto:
-        'Sitios rápidos y sin dependencias innecesarias, con el contenido separado de la presentación para que se puedan mantener sin rehacerlos. Construidos sobre una plantilla propia, no sobre un tema comprado.',
+        'Sitios rápidos y sin dependencias innecesarias, construidos sobre una plantilla propia y no sobre un tema comprado. Hay un configurador: elija estructura, color y tipografía, véalo en vivo y envíe el briefing en cinco minutos. Un ejemplo publicado: <a href="https://seiler18.github.io/ceder/" target="_blank" rel="noopener noreferrer">CEDER SpA</a>.',
       icon: 'fa-solid fa-window-maximize',
-      enlace: { label: 'Ver un sitio real', href: 'https://seiler18.github.io/ceder/', externo: true },
+      enlace: { label: 'Armar el mío', href: 'configurador/' },
     },
     {
       titulo: 'Código abierto',

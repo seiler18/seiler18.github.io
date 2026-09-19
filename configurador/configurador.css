@@ -1,0 +1,733 @@
+/* ============================================================
+   CONFIGURADOR DE SITIOS
+
+   DOS SISTEMAS DE COLOR CONVIVEN EN ESTA PÁGINA, y no hay que mezclarlos:
+
+     · Los tokens `--ui-*` son la piel del configurador. Son fijos: la
+       paleta «Núcleo» del hub.
+     · Los tokens `--p-*` son la paleta QUE EL CLIENTE ESTÁ ELIGIENDO. Solo
+       valen dentro de `.maqueta`, donde los escribe el JS en cada cambio.
+
+   Si un `--p-*` se escapa fuera de la maqueta, el configurador entero cambia
+   de color cuando el visitante prueba una paleta, y deja de saberse qué es
+   la herramienta y qué es el resultado.
+   ============================================================ */
+
+:root {
+  --ui-bg: #05070f;
+  --ui-bg-2: #090c17;
+  --ui-surface: #0e1220;
+  --ui-surface-2: #0b0f1c;
+  --ui-primario: #4763f2;
+  --ui-primario-claro: #8fa2ff;
+  --ui-acento: #2ee6b0;
+  --ui-texto: #e8ebf5;
+  --ui-tenue: #98a3bd;
+  --ui-borde: rgba(255, 255, 255, 0.08);
+  --ui-borde-vivo: rgba(46, 230, 176, 0.42);
+
+  --fuente-titulos: 'Space Grotesk', system-ui, sans-serif;
+  --fuente-texto: 'Inter', system-ui, sans-serif;
+
+  --radio: 12px;
+  --radio-chico: 8px;
+  --rapido: 140ms;
+  --medio: 260ms;
+  --curva: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Zona pulsable mínima en pantalla táctil. No se toca el tamaño de la
+     letra para conseguirla: se toca el alto del control. */
+  --toque-min: 44px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--ui-bg);
+  color: var(--ui-texto);
+  font-family: var(--fuente-texto);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--ui-primario-claro); }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--ui-acento);
+  outline-offset: 2px;
+}
+
+/* El enlace de salto se esconde HACIA ARRIBA, no hacia la izquierda: un
+   `left: -9999px` infla el `scrollWidth` del documento y en móvil aparece
+   una barra de desplazamiento horizontal de 20 píxeles que nadie sabe de
+   dónde sale. Medido: eran 22px. */
+.saltar {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+}
+.saltar:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 50;
+  padding: 0.75rem 1rem;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-borde-vivo);
+  border-radius: var(--radio-chico);
+}
+
+/* ----------------------- CABECERA ----------------------- */
+.cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: color-mix(in srgb, var(--ui-bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--ui-borde);
+}
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--ui-texto);
+  text-decoration: none;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+}
+.marca img {
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  border: 2px solid var(--ui-borde-vivo);
+}
+.cabecera-titulo {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ui-tenue);
+}
+
+/* ----------------------- LIENZO ----------------------- */
+.lienzo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.columna-form,
+.columna-vista { min-width: 0; }
+
+.intro { margin-bottom: 2.5rem; }
+.eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ui-acento);
+}
+h1 {
+  margin: 0 0 1rem;
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.intro-texto { margin: 0 0 0.75rem; max-width: 60ch; }
+.intro-nota {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 0.88rem;
+  color: var(--ui-tenue);
+}
+
+/* ----------------------- PASOS ----------------------- */
+.paso {
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-borde);
+  border-radius: var(--radio);
+}
+.paso h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 0.5rem;
+  font-family: var(--fuente-titulos);
+  font-size: 1.15rem;
+}
+.paso-num {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--ui-primario);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.paso-ayuda {
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  color: var(--ui-tenue);
+  max-width: 62ch;
+}
+
+/* ----------------------- CAMPOS ----------------------- */
+.campo { display: block; margin-bottom: 1.1rem; }
+.campo-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.campo-label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.campo-label b { color: var(--ui-acento); }
+.campo-ayuda {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--ui-tenue);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 0.6rem 0.8rem;
+  background: var(--ui-surface-2);
+  color: var(--ui-texto);
+  border: 1px solid var(--ui-borde);
+  border-radius: var(--radio-chico);
+  font: inherit;
+  font-size: 0.95rem;
+  transition: border-color var(--rapido) var(--curva);
+}
+textarea { resize: vertical; line-height: 1.55; }
+input:hover, select:hover, textarea:hover { border-color: var(--ui-borde-vivo); }
+::placeholder { color: color-mix(in srgb, var(--ui-tenue) 70%, transparent); }
+
+/* Solo se marca en rojo lo que el visitante YA tocó y dejó mal. Pintar de
+   rojo un formulario recién abierto es agresivo y no informa de nada. */
+.campo.error input,
+.campo.error textarea { border-color: #f87171; }
+.campo-error {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: #fca5a5;
+}
+
+/* ----------------------- SECCIONES Y CASILLAS ----------------------- */
+.secciones, .tiene {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+}
+.casilla {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  min-height: var(--toque-min);
+  padding: 0.7rem 0.8rem;
+  background: var(--ui-surface-2);
+  border: 1px solid var(--ui-borde);
+  border-radius: var(--radio-chico);
+  cursor: pointer;
+  transition: border-color var(--rapido) var(--curva), background var(--rapido) var(--curva);
+}
+.casilla:hover { border-color: var(--ui-borde-vivo); }
+.casilla input { margin-top: 0.25rem; accent-color: var(--ui-acento); flex-shrink: 0; }
+.casilla:has(input:checked) {
+  border-color: var(--ui-borde-vivo);
+  background: color-mix(in srgb, var(--ui-acento) 8%, var(--ui-surface-2));
+}
+/* Portada y contacto no se pueden desmarcar: un sitio sin ellas no es un
+   sitio. Se enseñan marcadas y apagadas para que se entienda que van. */
+.casilla:has(input:disabled) { opacity: 0.62; cursor: default; }
+.casilla-txt { display: block; font-size: 0.9rem; font-weight: 600; }
+.casilla-desc { display: block; font-size: 0.78rem; color: var(--ui-tenue); font-weight: 400; }
+
+.aviso {
+  margin: 1rem 0 0;
+  padding: 0.75rem 0.9rem;
+  border-left: 3px solid var(--ui-acento);
+  background: color-mix(in srgb, var(--ui-acento) 8%, transparent);
+  border-radius: 0 var(--radio-chico) var(--radio-chico) 0;
+  font-size: 0.85rem;
+}
+
+/* ----------------------- GRUPOS DE OPCIÓN ----------------------- */
+.grupo { border: none; margin: 0 0 1.5rem; padding: 0; }
+.grupo legend {
+  padding: 0;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.opciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.6rem;
+}
+.opcion {
+  display: block;
+  min-height: var(--toque-min);
+  padding: 0.7rem 0.85rem;
+  background: var(--ui-surface-2);
+  border: 1px solid var(--ui-borde);
+  border-radius: var(--radio-chico);
+  cursor: pointer;
+  transition: border-color var(--rapido) var(--curva), background var(--rapido) var(--curva);
+}
+.opcion:hover { border-color: var(--ui-borde-vivo); }
+.opcion input { position: absolute; opacity: 0; pointer-events: none; }
+.opcion:has(input:checked) {
+  border-color: var(--ui-acento);
+  background: color-mix(in srgb, var(--ui-acento) 10%, var(--ui-surface-2));
+}
+.opcion-nombre { display: block; font-size: 0.9rem; font-weight: 600; }
+.opcion-desc { display: block; font-size: 0.78rem; color: var(--ui-tenue); }
+
+/* ----------------------- PALETAS ----------------------- */
+.paletas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.6rem;
+}
+.paleta {
+  display: block;
+  padding: 0.7rem;
+  background: var(--ui-surface-2);
+  border: 1px solid var(--ui-borde);
+  border-radius: var(--radio-chico);
+  cursor: pointer;
+  transition: border-color var(--rapido) var(--curva), transform var(--rapido) var(--curva);
+}
+.paleta:hover { border-color: var(--ui-borde-vivo); transform: translateY(-2px); }
+.paleta input { position: absolute; opacity: 0; pointer-events: none; }
+.paleta:has(input:checked) { border-color: var(--ui-acento); }
+.paleta-muestra {
+  display: flex;
+  height: 34px;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--ui-borde);
+}
+.paleta-muestra i { flex: 1; }
+.paleta-muestra i:nth-child(1) { flex: 2; }
+.paleta-nombre { display: block; font-size: 0.88rem; font-weight: 600; }
+.paleta-para { display: block; font-size: 0.75rem; color: var(--ui-tenue); line-height: 1.4; }
+
+/* ----------------------- BOTONES ----------------------- */
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.btn {
+  min-height: var(--toque-min);
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--rapido) var(--curva), background var(--rapido) var(--curva);
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:disabled { opacity: 0.55; cursor: progress; transform: none; }
+/* Blanco sobre --ui-primario da 4.84:1. Si se aclara el primario, deja de
+   cumplir AA: recalcular antes de tocarlo. */
+.btn.primario { background: var(--ui-primario); color: #fff; }
+.btn.primario:hover { background: color-mix(in srgb, var(--ui-primario) 85%, #fff); }
+.btn.fantasma {
+  background: transparent;
+  color: var(--ui-texto);
+  border-color: var(--ui-borde-vivo);
+}
+.btn.fantasma:hover { background: color-mix(in srgb, var(--ui-acento) 10%, transparent); }
+
+.estado {
+  margin: 1rem 0 0;
+  min-height: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.estado.ok { color: var(--ui-acento); }
+.estado.mal { color: #fca5a5; }
+
+.legal {
+  margin: 1.25rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ui-tenue);
+  max-width: 62ch;
+}
+
+/* La trampa para robots. `display:none` no sirve: varios rellenadores
+   automáticos lo detectan y se lo saltan. Así queda fuera de la pantalla
+   pero presente en el DOM, y `aria-hidden` lo esconde del lector. */
+.colmena {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ----------------------- VISTA PREVIA ----------------------- */
+.vista-sticky {
+  position: sticky;
+  top: 5.5rem;
+}
+.vista-barra {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-borde);
+  border-bottom: none;
+  border-radius: var(--radio) var(--radio) 0 0;
+}
+.vista-puntos { display: flex; gap: 5px; }
+.vista-puntos i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ui-borde);
+}
+.vista-url {
+  flex: 1;
+  min-width: 0;
+  padding: 0.2rem 0.6rem;
+  background: var(--ui-surface-2);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  color: var(--ui-tenue);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vista-tamanos { display: flex; gap: 0.25rem; }
+.vista-tamanos button {
+  padding: 0.3rem 0.65rem;
+  background: transparent;
+  color: var(--ui-tenue);
+  border: 1px solid var(--ui-borde);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.vista-tamanos button.activo {
+  color: var(--ui-texto);
+  border-color: var(--ui-borde-vivo);
+  background: color-mix(in srgb, var(--ui-acento) 10%, transparent);
+}
+
+.vista-marco {
+  height: min(70vh, 720px);
+  overflow: hidden;
+  border: 1px solid var(--ui-borde);
+  border-radius: 0 0 var(--radio) var(--radio);
+  background: var(--ui-surface-2);
+  display: grid;
+  place-items: start center;
+}
+.vista-marco.movil { padding: 1rem 0; }
+.vista-marco.movil .maqueta {
+  width: 300px;
+  border-radius: 20px;
+  border: 1px solid var(--ui-borde);
+}
+
+.maqueta {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--p-bg);
+  color: var(--p-texto);
+  font-family: var(--p-fuente-texto);
+  font-size: 13px;
+  line-height: 1.6;
+  transition: background var(--medio) var(--curva), color var(--medio) var(--curva);
+}
+.maqueta::-webkit-scrollbar { width: 6px; }
+.maqueta::-webkit-scrollbar-thumb {
+  background: var(--p-borde);
+  border-radius: 3px;
+}
+
+.vista-pie {
+  margin: 0.9rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ui-tenue);
+}
+
+/* ---- Interior de la maqueta. Todo lo de aquí abajo usa SOLO tokens --p-*,
+        que escribe el JS. Ver la nota de la cabecera del archivo. ---- */
+.mq-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--p-bg) 90%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--p-borde);
+}
+.mq-marca {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--p-fuente-titulos);
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--p-texto-fuerte);
+  white-space: nowrap;
+}
+.mq-mono {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: var(--p-primario);
+  color: #fff;
+  font-size: 10px;
+}
+.mq-nav {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--p-tenue);
+  overflow: hidden;
+}
+.mq-nav span:first-child { color: var(--p-acento); font-weight: 600; }
+
+/* Armazón lateral: la maqueta pasa a dos columnas. Es el mismo contenido,
+   solo cambia dónde vive la navegación — que es exactamente lo que pasa en
+   el sitio real al cambiar `site.armazon`. */
+.maqueta.lateral { display: grid; grid-template-columns: 96px 1fr; }
+.mq-sidebar {
+  padding: 14px 10px;
+  border-right: 1px solid var(--p-borde);
+  background: var(--p-bg-2);
+}
+/* En la columna lateral el nombre dispone de 96px, así que el `nowrap` que
+   hereda de .mq-marca lo hace desbordar y se lee cortado. Aquí sí envuelve,
+   y `anywhere` parte también una palabra larga sin espacios. */
+.mq-sidebar .mq-marca {
+  flex-direction: column;
+  gap: 6px;
+  font-size: 10px;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
+}
+.mq-sidebar .mq-nav {
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 0;
+  font-size: 9px;
+}
+
+.mq-hero {
+  padding: 46px 22px;
+  text-align: center;
+  background:
+    radial-gradient(360px circle at 25% 20%, var(--p-brillo), transparent 65%),
+    radial-gradient(300px circle at 78% 70%, var(--p-brillo-acento), transparent 60%);
+}
+.mq-eyebrow {
+  margin: 0 0 8px;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--p-acento);
+  font-weight: 600;
+}
+.mq-h1 {
+  margin: 0 0 6px;
+  font-family: var(--p-fuente-titulos);
+  font-size: 26px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--p-texto-fuerte);
+  font-weight: 800;
+  word-break: break-word;
+}
+.mq-lema {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--p-primario-claro);
+}
+.mq-bajada {
+  margin: 0 auto 16px;
+  max-width: 44ch;
+  font-size: 11px;
+  color: var(--p-tenue);
+}
+.mq-botones { display: flex; gap: 8px; justify-content: center; }
+.mq-btn {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.mq-btn.lleno { background: var(--p-primario); color: #fff; }
+.mq-btn.linea { border: 1px solid var(--p-acento); color: var(--p-acento); }
+
+.mq-seccion { padding: 26px 22px; border-top: 1px solid var(--p-borde); }
+.mq-seccion:nth-child(even) { background: var(--p-bg-2); }
+.mq-divisor {
+  width: 46px;
+  height: 2px;
+  margin: 0 auto 12px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--p-primario), var(--p-acento));
+}
+.mq-h2 {
+  margin: 0 0 4px;
+  text-align: center;
+  font-family: var(--p-fuente-titulos);
+  font-size: 15px;
+  color: var(--p-texto-fuerte);
+  font-weight: 700;
+}
+.mq-sub {
+  margin: 0 auto 14px;
+  max-width: 40ch;
+  text-align: center;
+  font-size: 10px;
+  color: var(--p-tenue);
+}
+.mq-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+.mq-tarjeta {
+  padding: 11px;
+  background: var(--p-surface);
+  border: 1px solid var(--p-borde);
+  border-radius: 8px;
+}
+.mq-tarjeta b {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--p-fuente-titulos);
+  font-size: 11px;
+  color: var(--p-texto-fuerte);
+}
+.mq-linea {
+  height: 5px;
+  margin-bottom: 4px;
+  border-radius: 3px;
+  background: var(--p-borde);
+}
+.mq-linea.corta { width: 62%; }
+.mq-icono {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--p-acento) 18%, transparent);
+  color: var(--p-acento);
+  font-size: 11px;
+  font-weight: 700;
+}
+.mq-prosa { max-width: 52ch; margin: 0 auto; }
+.mq-campo {
+  height: 26px;
+  margin-bottom: 7px;
+  background: var(--p-surface);
+  border: 1px solid var(--p-borde);
+  border-radius: 6px;
+}
+.mq-pie {
+  padding: 16px 22px;
+  border-top: 1px solid var(--p-borde);
+  text-align: center;
+  font-size: 9px;
+  color: var(--p-tenue);
+}
+
+/* ----------------------- PIE ----------------------- */
+.pie {
+  padding: 1.75rem 1.5rem 2.5rem;
+  border-top: 1px solid var(--ui-borde);
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ui-tenue);
+}
+.pie p { margin: 0; }
+
+/* ----------------------- RESPONSIVE -----------------------
+   A una columna, la vista previa va PRIMERO y pegada arriba: en un teléfono
+   no sirve de nada una previsualización que hay que ir a buscar al final de
+   un formulario de cinco pasos. */
+@media (max-width: 1100px) {
+  .lienzo {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 1.5rem 1rem 3rem;
+  }
+  .columna-vista { order: -1; }
+  .vista-sticky { position: static; }
+  .vista-marco { height: 60vh; }
+  .campo-fila { grid-template-columns: 1fr; gap: 0; }
+  .paso { padding: 1.25rem; }
+  .cabecera { padding: 0.65rem 1rem; }
+  .cabecera-titulo { display: none; }
+}
+
+@media (pointer: coarse) {
+  .vista-tamanos button { min-height: 36px; }
+}
