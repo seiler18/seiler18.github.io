@@ -24,7 +24,7 @@ export const trabajo = {
     {
       titulo: 'Sistemas de gestión ISO',
       texto:
-        'Diagnóstico de brechas, preparación para la auditoría de certificación, integración multinorma y automatización del sistema. Auditor interno en ISO 9001, 14001, 45001, 27001, 22301 y 20000-1.',
+        'Estructura documental del sistema en SharePoint, Drive o Dropbox —que es donde de verdad se gana o se pierde una auditoría—, diagnóstico de brechas, integración multinorma y automatización. Auditor interno en ISO 9001, 14001, 45001, 27001, 22301 y 20000-1.',
       icon: 'fa-solid fa-shield-halved',
       enlace: { label: 'Ver servicios', href: 'https://seiler18.github.io/sistemas-gestion/', externo: true },
     },
