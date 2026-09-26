@@ -154,7 +154,7 @@
         <ul class="canales">${t}</ul>
       </aside>
     </div>
-  `;return a({id:`contacto`,eyebrow:c.eyebrow,titulo:c.titulo,subtitulo:c.subtitulo,contenido:n})}function f(){let e=document.getElementById(`formContacto`);if(!e)return;let t=document.getElementById(`avisoContacto`),n=document.getElementById(`btnCorreo`),r=document.getElementById(`btnWhatsapp`);function i(e,n){t.textContent=e,t.className=`contacto-aviso visible ${n}`}let a=()=>({nombre:e.nombre.value.trim(),correo:e.correo.value.trim(),motivo:e.motivo.value,mensaje:e.mensaje.value.trim()});function o(){return e.checkValidity()?!0:(i(`Faltan datos: revisa el nombre, el correo y el mensaje.`,`malo`),e.querySelector(`:invalid`)?.focus(),!1)}e.addEventListener(`submit`,async t=>{if(t.preventDefault(),!o())return;let r=a();n.disabled=!0,i(`Enviando…`,`nota`);try{let t=await fetch(l,{method:`POST`,headers:{"Content-Type":`application/json`,Accept:`application/json`},body:JSON.stringify({Nombre:r.nombre,Correo:r.correo,Motivo:r.motivo,Mensaje:r.mensaje,_subject:`Web · ${r.motivo} — ${r.nombre}`,_template:`table`,_captcha:`false`,_honey:e.elements._honey.value})}),n=await t.json().catch(()=>({}));if(!t.ok)throw Error(`HTTP ${t.status}`);if(n.success===`false`||n.success===!1){i(n.message||`El envío quedó pendiente de confirmación.`,`nota`);return}e.reset(),i(`¡Mensaje enviado! Te responderemos al correo que dejaste.`,`ok`)}catch(e){console.error(`No se pudo enviar el formulario:`,e),i(`No se pudo enviar. Escríbenos a ${c.correo}.`,`malo`)}finally{n.disabled=!1}}),r?.addEventListener(`click`,()=>{if(!o())return;let e=a(),t=`Hola, escribo desde la web.\n\nMotivo: ${e.motivo}\nNombre: ${e.nombre}\nCorreo: ${e.correo}\n\n${e.mensaje}`;window.open(`${u}?text=${encodeURIComponent(t)}`,`_blank`,`noopener`),i(`Se abrió WhatsApp con el mensaje listo: solo falta enviarlo.`,`ok`)})}var p={id:`trabajo`,eyebrow:`En qué trabajo`,titulo:`Cuatro puertas`,subtitulo:`Cada una lleva a un sitio propio. Elija la que le sirva.`,filtro:!1,densidad:`amplia`,items:[{titulo:`Sistemas de gestión ISO`,texto:`Estructura documental del sistema en SharePoint, Drive o Dropbox —que es donde de verdad se gana o se pierde una auditoría—, diagnóstico de brechas, integración multinorma y automatización. Auditor interno en ISO 9001, 14001, 45001, 27001, 22301 y 20000-1.`,icon:`fa-solid fa-shield-halved`,enlace:{label:`Ver servicios`,href:`https://seiler18.github.io/sistemas-gestion/`,externo:!0}},{titulo:`Currículum y portafolio`,texto:`La trayectoria completa: experiencia, certificaciones verificables y el portafolio de proyectos de desarrollo. Con el CV descargable en español y en inglés.`,icon:`fa-solid fa-id-card`,enlace:{label:`Ver el currículum`,href:`https://seiler18.github.io/Curriculo/`,externo:!0}},{titulo:`Sitios web`,texto:`Sitios rápidos y sin dependencias innecesarias, construidos sobre una plantilla propia y no sobre un tema comprado. Hay un configurador: elija estructura, color y tipografía, véalo en vivo y envíe el briefing en cinco minutos. Un ejemplo publicado: <a href="https://seiler18.github.io/ceder/" target="_blank" rel="noopener noreferrer">CEDER SpA</a>.`,icon:`fa-solid fa-window-maximize`,enlace:{label:`Armar el mío`,href:`configurador/`}},{titulo:`Código abierto`,texto:`Los repositorios de todo lo anterior: las plantillas, las herramientas y los proyectos de práctica. Está publicado porque se puede revisar, que es la única forma seria de demostrar cómo se trabaja.`,icon:`fa-brands fa-github`,enlace:{label:`Ver en GitHub`,href:`https://github.com/seiler18`,externo:!0}}]},m=[{id:`inicio`,label:`Inicio`,short:`Inicio`,icon:`fa-solid fa-house`,render:i},{id:`trabajo`,label:`En qué trabajo`,short:`Trabajo`,icon:`fa-solid fa-grip`,render:()=>o(p)},{id:`contacto`,label:`Contacto`,short:`Contacto`,icon:`fa-solid fa-paper-plane`,render:d}],h=m.filter(e=>e.enMenu!==!1);function g(t){return`
+  `;return a({id:`contacto`,eyebrow:c.eyebrow,titulo:c.titulo,subtitulo:c.subtitulo,contenido:n})}function f(){let e=document.getElementById(`formContacto`);if(!e)return;let t=document.getElementById(`avisoContacto`),n=document.getElementById(`btnCorreo`),r=document.getElementById(`btnWhatsapp`);function i(e,n){t.textContent=e,t.className=`contacto-aviso visible ${n}`}let a=()=>({nombre:e.nombre.value.trim(),correo:e.correo.value.trim(),motivo:e.motivo.value,mensaje:e.mensaje.value.trim()});function o(){return e.checkValidity()?!0:(i(`Faltan datos: revisa el nombre, el correo y el mensaje.`,`malo`),e.querySelector(`:invalid`)?.focus(),!1)}e.addEventListener(`submit`,async t=>{if(t.preventDefault(),!o())return;let r=a();n.disabled=!0,i(`Enviando…`,`nota`);try{let t=await fetch(l,{method:`POST`,headers:{"Content-Type":`application/json`,Accept:`application/json`},body:JSON.stringify({Nombre:r.nombre,Correo:r.correo,Motivo:r.motivo,Mensaje:r.mensaje,_subject:`Web · ${r.motivo} — ${r.nombre}`,_template:`table`,_captcha:`false`,_honey:e.elements._honey.value})}),n=await t.json().catch(()=>({}));if(!t.ok)throw Error(`HTTP ${t.status}`);if(n.success===`false`||n.success===!1){i(n.message||`El envío quedó pendiente de confirmación.`,`nota`);return}e.reset(),i(`¡Mensaje enviado! Te responderemos al correo que dejaste.`,`ok`)}catch(e){console.error(`No se pudo enviar el formulario:`,e),i(`No se pudo enviar. Escríbenos a ${c.correo}.`,`malo`)}finally{n.disabled=!1}}),r?.addEventListener(`click`,()=>{if(!o())return;let e=a(),t=`Hola, escribo desde la web.\n\nMotivo: ${e.motivo}\nNombre: ${e.nombre}\nCorreo: ${e.correo}\n\n${e.mensaje}`;window.open(`${u}?text=${encodeURIComponent(t)}`,`_blank`,`noopener`),i(`Se abrió WhatsApp con el mensaje listo: solo falta enviarlo.`,`ok`)})}var p={id:`trabajo`,eyebrow:`En qué trabajo`,titulo:`Cuatro puertas`,subtitulo:`Cada una lleva a un sitio propio. Elija la que le sirva.`,filtro:!1,densidad:`amplia`,items:[{titulo:`Sistemas de gestión ISO`,texto:`Estructura documental del sistema en SharePoint, Drive o Dropbox —que es donde de verdad se gana o se pierde una auditoría—, diagnóstico de brechas, integración multinorma y automatización. Auditor interno en ISO 9001, 14001, 45001, 27001, 22301 y 20000-1.`,icon:`fa-solid fa-shield-halved`,enlace:{label:`Ver servicios`,href:`https://seiler18.github.io/sistemas-gestion/`,externo:!0}},{titulo:`Currículum y portafolio`,texto:`La trayectoria completa: experiencia, certificaciones verificables y el portafolio de proyectos de desarrollo. Con el CV descargable en español y en inglés.`,icon:`fa-solid fa-id-card`,enlace:{label:`Ver el currículum`,href:`https://seiler18.github.io/Curriculo/`,externo:!0}},{titulo:`Sitios web`,texto:`Sitios rápidos y sin dependencias innecesarias, construidos sobre una plantilla propia y no sobre un tema comprado. Hay un configurador: elija estructura, color y tipografía, véalo en vivo y envíe el briefing en cinco minutos. Un ejemplo publicado: <a href="https://seiler18.github.io/ceder/" target="_blank" rel="noopener noreferrer">CEDER SpA</a>.`,icon:`fa-solid fa-window-maximize`,enlace:{label:`Armar el mío`,href:`configurador/`}},{titulo:`Código abierto`,texto:`Los repositorios de todo lo anterior: las plantillas, las herramientas y los proyectos de práctica. Está publicado porque se puede revisar, que es la única forma seria de demostrar cómo se trabaja.`,icon:`fa-brands fa-github`,enlace:{label:`Ver en GitHub`,href:`https://github.com/seiler18`,externo:!0}}]},m={id:`proyectos`,eyebrow:`Ya en producción`,titulo:`Proyectos publicados`,subtitulo:`Trabajo real, funcionando hoy. Cada tarjeta abre el sitio en vivo.`,filtro:!1,densidad:`amplia`,items:[{titulo:`Regenera Market`,texto:`Marketplace multi-proveedor de productos, experiencias y servicios regenerativos para el turismo colombiano: catálogo sobre Postgres, registro con segundo factor, panel de administración y comunidad. Next.js, Supabase y Vercel.`,icon:`fa-solid fa-leaf`,enlace:{label:`Ver el marketplace`,href:`https://regenera-market.vercel.app/`,externo:!0}},{titulo:`VentasMaker`,texto:`Catálogo, punto de venta e inventario para una tienda de Puerto Montt, sin mensualidad: pedido por WhatsApp, venta con lector de códigos, reportes y etiquetas. Front estático y Google Sheets con Apps Script como base de datos.`,icon:`fa-solid fa-cash-register`,enlace:{label:`Ver el catálogo`,href:`https://seiler18.github.io/VentasMaker/`,externo:!0}},{titulo:`Sitio corporativo Opciones S.A.`,texto:`Nuevo sitio de una empresa chilena de soluciones TI y data center: tema propio de WordPress sin plugins, formulario con protección anti-spam y bandeja de mensajes, y una guía de entrega para el área de Sistemas.`,icon:`fa-solid fa-building`,enlace:{label:`Ver la maqueta`,href:`https://seiler18.github.io/OPCIONES/`,externo:!0}},{titulo:`CEDER SpA`,texto:`Perfil institucional de un centro de estudios de desarrollo regional, pensado también para postular a licitaciones públicas. El primer sitio fabricado con la plantilla propia.`,icon:`fa-solid fa-landmark`,enlace:{label:`Ver el sitio`,href:`https://seiler18.github.io/ceder/`,externo:!0}}]},h=[{id:`inicio`,label:`Inicio`,short:`Inicio`,icon:`fa-solid fa-house`,render:i},{id:`trabajo`,label:`En qué trabajo`,short:`Trabajo`,icon:`fa-solid fa-grip`,render:()=>o(p)},{id:`proyectos`,label:`Proyectos`,short:`Proyectos`,icon:`fa-solid fa-diagram-project`,render:()=>o(m)},{id:`contacto`,label:`Contacto`,short:`Contacto`,icon:`fa-solid fa-paper-plane`,render:d}],g=h.filter(e=>e.enMenu!==!1);function _(t){return`
     <a class="${t}" href="#inicio" aria-label="Ir al inicio">
       ${e.logo?`<img class="${t}-logo" src="${e.logo}" alt="Foto de ${e.nombre}" width="40" height="40">`:`<span class="${t}-monograma" aria-hidden="true">${e.monograma}</span>`}
       <span class="${t}-texto">
@@ -162,7 +162,7 @@
         ${e.lema?`<span class="${t}-lema">${e.lema}</span>`:``}
       </span>
     </a>
-  `}function _(e){return h.map(t=>`
+  `}function v(e){return g.map(t=>`
       <li>
         <a class="${e}" href="#${t.id}" data-spy-link="${t.id}">
           <i class="${t.icon}" aria-hidden="true"></i>
@@ -170,24 +170,24 @@
           <span class="nav-corto">${t.short}</span>
         </a>
       </li>
-    `).join(``)}function v(){return n.map(e=>`
+    `).join(``)}function y(){return n.map(e=>`
       <a class="btn-descarga" href="${e.href}" target="_blank" rel="noopener noreferrer"
          download="${e.download}">
         <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>${e.label}
       </a>
-    `).join(``)}function y(){return t.map(e=>`
+    `).join(``)}function b(){return t.map(e=>`
       <a href="${e.href}" target="_blank" rel="noopener noreferrer"
          title="${e.label}" aria-label="${e.label}">
         <i class="${e.icon}" aria-hidden="true"></i>
       </a>
-    `).join(``)}function b(){return`
+    `).join(``)}function x(){return`
     <header class="topbar">
       <div class="topbar-inner">
-        ${g(`marca`)}
+        ${_(`marca`)}
 
         <nav class="topbar-nav" id="menuPrincipal" aria-label="Secciones">
-          <ul>${_(`nav-link`)}</ul>
-          ${n.length?`<div class="topbar-extras">${v()}</div>`:``}
+          <ul>${v(`nav-link`)}</ul>
+          ${n.length?`<div class="topbar-extras">${y()}</div>`:``}
         </nav>
 
         <button type="button" class="menu-boton" id="botonMenu"
@@ -196,13 +196,13 @@
         </button>
       </div>
     </header>
-  `}function x(){return`
+  `}function S(){return`
     <aside class="sidenav" aria-label="Secciones">
-      <div class="sidenav-brand">${g(`marca`)}</div>
-      <ul class="sidenav-nav">${_(`nav-link`)}</ul>
+      <div class="sidenav-brand">${_(`marca`)}</div>
+      <ul class="sidenav-nav">${v(`nav-link`)}</ul>
       <div class="sidenav-actions">
-        ${v()}
-        ${t.length?`<div class="sidenav-social">${y()}</div>`:``}
+        ${y()}
+        ${t.length?`<div class="sidenav-social">${b()}</div>`:``}
       </div>
     </aside>
 
@@ -212,11 +212,11 @@
          sitio. Sin esto, el logo no se ve en el celular. -->
     <header class="topbar topbar-minima">
       <div class="topbar-inner">
-        ${g(`marca marca-movil`)}
-        ${n.length?`<div class="topbar-extras">${v()}</div>`:``}
+        ${_(`marca marca-movil`)}
+        ${n.length?`<div class="topbar-extras">${y()}</div>`:``}
       </div>
     </header>
-  `}function S(){return e.armazon===`sidebar`?x():b()}function C(){let e=document.getElementById(`botonMenu`),t=document.getElementById(`menuPrincipal`);if(!e||!t)return;let n=()=>{t.classList.remove(`abierto`),e.setAttribute(`aria-expanded`,`false`),e.setAttribute(`aria-label`,`Abrir menú`)};e.addEventListener(`click`,()=>{let n=t.classList.toggle(`abierto`);e.setAttribute(`aria-expanded`,String(n)),e.setAttribute(`aria-label`,n?`Cerrar menú`:`Abrir menú`)}),t.addEventListener(`click`,e=>{e.target.closest(`a`)&&n()}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&n()}),window.matchMedia(`(min-width: 992px)`).addEventListener(`change`,e=>{e.matches&&n()})}function w(){let n=h.map(e=>`<li><a href="#${e.id}">${e.label}</a></li>`).join(``),r=t.map(e=>`
+  `}function C(){return e.armazon===`sidebar`?S():x()}function w(){let e=document.getElementById(`botonMenu`),t=document.getElementById(`menuPrincipal`);if(!e||!t)return;let n=()=>{t.classList.remove(`abierto`),e.setAttribute(`aria-expanded`,`false`),e.setAttribute(`aria-label`,`Abrir menú`)};e.addEventListener(`click`,()=>{let n=t.classList.toggle(`abierto`);e.setAttribute(`aria-expanded`,String(n)),e.setAttribute(`aria-label`,n?`Cerrar menú`:`Abrir menú`)}),t.addEventListener(`click`,e=>{e.target.closest(`a`)&&n()}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&n()}),window.matchMedia(`(min-width: 992px)`).addEventListener(`change`,e=>{e.matches&&n()})}function T(){let n=g.map(e=>`<li><a href="#${e.id}">${e.label}</a></li>`).join(``),r=t.map(e=>`
       <a href="${e.href}" target="_blank" rel="noopener noreferrer" aria-label="${e.label}">
         <i class="${e.icon}" aria-hidden="true"></i> <span>${e.label}</span>
       </a>
@@ -244,14 +244,14 @@
         © ${e.nombre} ${new Date().getFullYear()}. Todos los derechos reservados.
       </p>
     </footer>
-  `}function T({linkSelector:e=`[data-spy-link]`,offset:t=96}={}){let n=new Map;for(let t of document.querySelectorAll(e)){let e=document.getElementById(t.dataset.spyLink);e&&(n.has(e)||n.set(e,{section:e,links:[]}),n.get(e).links.push(t))}let r=[...n.values()];if(!r.length)return()=>{};let i=null,a=!1;function o(e){if(e!==i){if(i)for(let e of i.links)e.classList.remove(`is-active`),e.removeAttribute(`aria-current`);for(let t of e.links)t.classList.add(`is-active`),t.setAttribute(`aria-current`,`true`);i=e}}function s(){a=!1;let e=window.scrollY;if(e+window.innerHeight>=document.documentElement.scrollHeight-4){o(r[r.length-1]);return}let n=e+t,i=r[0];for(let t of r)if(t.section.getBoundingClientRect().top+e<=n)i=t;else break;o(i)}function c(){a||(a=!0,requestAnimationFrame(s))}return window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),window.addEventListener(`load`,c),s(),c}var E=`0px 0px -12% 0px`,D=70,O=6;function k(){let e=document.querySelectorAll(`[data-anim]`);if(!e.length)return;if(window.matchMedia(`(prefers-reduced-motion: reduce)`).matches||!(`IntersectionObserver`in window)){for(let t of e)t.classList.add(`anim-visible`);return}let t=e=>{let t=Number(e.dataset.animEspera);if(t)return t;let n=e.parentElement;if(!n||!n.hasAttribute(`data-anim-secuencia`))return 0;let r=[...n.children].filter(e=>e.hasAttribute(`data-anim`)).indexOf(e);return Math.min(r,O)*D},n=new IntersectionObserver((e,n)=>{for(let r of e){if(!r.isIntersecting)continue;let e=r.target,i=t(e);i&&(e.style.transitionDelay=`${i}ms`),e.classList.add(`anim-visible`),n.unobserve(e)}},{rootMargin:E,threshold:.05}),r=e=>{let t=e.target;t.hasAttribute(`data-anim`)&&t.style.transitionDelay&&(t.style.transitionDelay=``)};for(let t of e)t.addEventListener(`transitionend`,r,{once:!0}),n.observe(t)}function A(){let e=document.querySelectorAll(`[data-modal]`);if(e.length){for(let t of e)t.addEventListener(`click`,()=>{let e=document.querySelector(t.dataset.modal);if(!e){console.warn(`Modal no encontrado: ${t.dataset.modal}`);return}e.parentElement!==document.body&&document.body.appendChild(e),e.showModal()});for(let e of document.querySelectorAll(`dialog.modal`)){e.addEventListener(`click`,t=>{let n=e.querySelector(`.modal-caja`);if(!n)return;let r=n.getBoundingClientRect();t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom||e.close()});for(let t of e.querySelectorAll(`[data-cerrar-modal]`))t.addEventListener(`click`,()=>e.close())}}}var j=document.getElementById(`app`);document.body.dataset.armazon=e.armazon,j.innerHTML=`
+  `}function E({linkSelector:e=`[data-spy-link]`,offset:t=96}={}){let n=new Map;for(let t of document.querySelectorAll(e)){let e=document.getElementById(t.dataset.spyLink);e&&(n.has(e)||n.set(e,{section:e,links:[]}),n.get(e).links.push(t))}let r=[...n.values()];if(!r.length)return()=>{};let i=null,a=!1;function o(e){if(e!==i){if(i)for(let e of i.links)e.classList.remove(`is-active`),e.removeAttribute(`aria-current`);for(let t of e.links)t.classList.add(`is-active`),t.setAttribute(`aria-current`,`true`);i=e}}function s(){a=!1;let e=window.scrollY;if(e+window.innerHeight>=document.documentElement.scrollHeight-4){o(r[r.length-1]);return}let n=e+t,i=r[0];for(let t of r)if(t.section.getBoundingClientRect().top+e<=n)i=t;else break;o(i)}function c(){a||(a=!0,requestAnimationFrame(s))}return window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),window.addEventListener(`load`,c),s(),c}var D=`0px 0px -12% 0px`,O=70,k=6;function A(){let e=document.querySelectorAll(`[data-anim]`);if(!e.length)return;if(window.matchMedia(`(prefers-reduced-motion: reduce)`).matches||!(`IntersectionObserver`in window)){for(let t of e)t.classList.add(`anim-visible`);return}let t=e=>{let t=Number(e.dataset.animEspera);if(t)return t;let n=e.parentElement;if(!n||!n.hasAttribute(`data-anim-secuencia`))return 0;let r=[...n.children].filter(e=>e.hasAttribute(`data-anim`)).indexOf(e);return Math.min(r,k)*O},n=new IntersectionObserver((e,n)=>{for(let r of e){if(!r.isIntersecting)continue;let e=r.target,i=t(e);i&&(e.style.transitionDelay=`${i}ms`),e.classList.add(`anim-visible`),n.unobserve(e)}},{rootMargin:D,threshold:.05}),r=e=>{let t=e.target;t.hasAttribute(`data-anim`)&&t.style.transitionDelay&&(t.style.transitionDelay=``)};for(let t of e)t.addEventListener(`transitionend`,r,{once:!0}),n.observe(t)}function j(){let e=document.querySelectorAll(`[data-modal]`);if(e.length){for(let t of e)t.addEventListener(`click`,()=>{let e=document.querySelector(t.dataset.modal);if(!e){console.warn(`Modal no encontrado: ${t.dataset.modal}`);return}e.parentElement!==document.body&&document.body.appendChild(e),e.showModal()});for(let e of document.querySelectorAll(`dialog.modal`)){e.addEventListener(`click`,t=>{let n=e.querySelector(`.modal-caja`);if(!n)return;let r=n.getBoundingClientRect();t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom||e.close()});for(let t of e.querySelectorAll(`[data-cerrar-modal]`))t.addEventListener(`click`,()=>e.close())}}}var M=document.getElementById(`app`);document.body.dataset.armazon=e.armazon,M.innerHTML=`
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
-  ${S()}
+  ${C()}
   <div class="app-main">
     <main id="contenido">
-      ${m.map(e=>e.render()).join(`
+      ${h.map(e=>e.render()).join(`
 `)}
     </main>
-    ${w()}
+    ${T()}
   </div>
-`;var M=T({offset:96});C(),k(),A(),s(),f(),window.addEventListener(`load`,M),document.addEventListener(`click`,e=>{e.target.closest(`[data-filtro]`)&&setTimeout(M,60)});
+`;var N=E({offset:96});w(),A(),j(),s(),f(),window.addEventListener(`load`,N),document.addEventListener(`click`,e=>{e.target.closest(`[data-filtro]`)&&setTimeout(N,60)});

@@ -37,6 +37,17 @@ const TIENE = [
 
 const $ = sel => document.querySelector(sel)
 
+/* Todo lo que ESCRIBE el visitante pasa por aquí antes de entrar en la
+   maqueta, porque la maqueta se monta con innerHTML. Sin esto, una razón
+   social como «Pérez & <Hijos>» pierde la mitad del nombre en la vista
+   previa, y cualquier marcado pegado en un campo se interpreta como HTML.
+   La CSP de la página (script-src 'self') ya impide que un <img onerror>
+   llegue a ejecutar nada, pero esa es la segunda barrera, no la primera.
+   Los textos del catálogo (datos.js) no lo necesitan: los escribimos
+   nosotros. */
+const ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }
+const escapar = texto => String(texto).replace(/[&<>"']/g, c => ESCAPES[c])
+
 /* Estado único. Todo lo que se ve en pantalla sale de aquí. */
 const estado = {
   nombre: '', nombre_corto: '', lema: '', actividad: '', publico: '', objetivo: '',
@@ -179,9 +190,13 @@ function pintarVista() {
   const t = TIPOGRAFIAS.find(x => x.id === estado.tipografia)
   const maqueta = $('#maqueta')
 
-  const nombre = estado.nombre.trim() || 'Su Empresa'
-  const corto = estado.nombre_corto.trim() || nombre
-  const lema = estado.lema.trim()
+  /* El monograma se calcula sobre el texto CRUDO y se escapa después: sobre
+     el ya escapado, «& Co» daría «&C» a partir de «&amp;». */
+  const nombreCrudo = estado.nombre.trim() || 'Su Empresa'
+  const nombre = escapar(nombreCrudo)
+  const corto = escapar(estado.nombre_corto.trim() || nombreCrudo)
+  const lema = escapar(estado.lema.trim())
+  const publico = estado.publico.trim()
 
   /* Los tokens de la paleta elegida, y SOLO dentro de la maqueta.
      `color-mix` deriva los brillos igual que lo hace la plantilla real, así
@@ -209,17 +224,19 @@ function pintarVista() {
   const enlaces = estado.secciones
     .map(id => id === 'inicio' ? 'Inicio' : (PINTA[id]?.titulo || id))
     .slice(0, lateral ? 6 : 5)
-    .map(l => `<span>${l}</span>`).join('')
+    // Escapado aunque salga del catálogo: si el id no está en PINTA se pinta
+    // el valor de la casilla tal cual, y ese valor se puede tocar desde el DOM.
+    .map(l => `<span>${escapar(l)}</span>`).join('')
 
-  const marca = `<div class="mq-marca"><span class="mq-mono">${monograma(nombre)}</span>${corto}</div>`
+  const marca = `<div class="mq-marca"><span class="mq-mono">${escapar(monograma(nombreCrudo))}</span>${corto}</div>`
   const nav = `<div class="mq-nav">${enlaces}</div>`
 
   const hero = `
     <div class="mq-hero">
-      <p class="mq-eyebrow">${estado.publico.trim() ? 'Para ' + estado.publico.trim().split(/[.,]/)[0].slice(0, 40) : 'Bienvenido'}</p>
+      <p class="mq-eyebrow">${publico ? escapar('Para ' + publico.split(/[.,]/)[0].slice(0, 40)) : 'Bienvenido'}</p>
       <h1 class="mq-h1">${nombre}</h1>
       ${lema ? `<p class="mq-lema">«${lema}»</p>` : ''}
-      <p class="mq-bajada">${estado.actividad.trim() || 'Aquí va la frase que explica a qué se dedican, en dos líneas como máximo.'}</p>
+      <p class="mq-bajada">${escapar(estado.actividad.trim()) || 'Aquí va la frase que explica a qué se dedican, en dos líneas como máximo.'}</p>
       <div class="mq-botones">
         <span class="mq-btn lleno">Ver más</span>
         <span class="mq-btn linea">Contacto</span>
