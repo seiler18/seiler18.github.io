@@ -29,6 +29,7 @@ import { renderTarjetas } from './components/sections/tarjetas.js'
 import { renderContacto } from './components/sections/contacto.js'
 
 import { trabajo } from './data/trabajo.js'
+import { proyectos } from './data/proyectos.js'
 
 export const mapa = [
   {
@@ -44,6 +45,13 @@ export const mapa = [
     short: 'Trabajo',
     icon: 'fa-solid fa-grip',
     render: () => renderTarjetas(trabajo),
+  },
+  {
+    id: 'proyectos',
+    label: 'Proyectos',
+    short: 'Proyectos',
+    icon: 'fa-solid fa-diagram-project',
+    render: () => renderTarjetas(proyectos),
   },
   {
     id: 'contacto',

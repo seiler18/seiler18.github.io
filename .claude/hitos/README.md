@@ -18,4 +18,5 @@ No se duplica información entre ellos. Para añadir un hito, ver la skill
 
 | # | Fecha | Título | Estado |
 |---|---|---|---|
+| [0002](0002-proyectos-publicados-y-endurecimiento.md) | 2026-09-26 | Proyectos publicados y endurecimiento | completado |
 | [0001](0001-hub-y-configurador.md) | 2026-09-19 | El hub y el configurador de sitios | completado |
