@@ -44,7 +44,12 @@ jobs:
       - name: Preparar Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # La misma versión mayor que en local. Node 20 dejó de recibir
+          # parches de seguridad en abril de 2026, y sobre él corren `npm ci`
+          # y los scripts de instalación de las dependencias: no es sitio
+          # para un runtime sin mantenimiento. Vite 8 pide
+          # ^20.19 || >=22.12, así que 24 no rompe nada.
+          node-version: '24'
           cache: npm
 
       # `npm ci` y no `npm install`: instala exactamente lo del
