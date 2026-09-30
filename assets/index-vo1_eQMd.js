@@ -185,15 +185,13 @@
       <div class="topbar-inner">
         ${_(`marca`)}
 
-        <nav class="topbar-nav" id="menuPrincipal" aria-label="Secciones">
+        <nav class="topbar-nav" aria-label="Secciones">
           <ul>${v(`nav-link`)}</ul>
-          ${n.length?`<div class="topbar-extras">${y()}</div>`:``}
         </nav>
 
-        <button type="button" class="menu-boton" id="botonMenu"
-                aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú">
-          <span class="menu-boton-barras" aria-hidden="true"></span>
-        </button>
+        <!-- Fuera del <nav> a propósito: en móvil el <nav> baja a la cinta
+             inferior y las descargas tienen que quedarse arriba. -->
+        ${n.length?`<div class="topbar-extras">${y()}</div>`:``}
       </div>
     </header>
   `}function S(){return`
@@ -216,7 +214,7 @@
         ${n.length?`<div class="topbar-extras">${y()}</div>`:``}
       </div>
     </header>
-  `}function C(){return e.armazon===`sidebar`?S():x()}function w(){let e=document.getElementById(`botonMenu`),t=document.getElementById(`menuPrincipal`);if(!e||!t)return;let n=()=>{t.classList.remove(`abierto`),e.setAttribute(`aria-expanded`,`false`),e.setAttribute(`aria-label`,`Abrir menú`)};e.addEventListener(`click`,()=>{let n=t.classList.toggle(`abierto`);e.setAttribute(`aria-expanded`,String(n)),e.setAttribute(`aria-label`,n?`Cerrar menú`:`Abrir menú`)}),t.addEventListener(`click`,e=>{e.target.closest(`a`)&&n()}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&n()}),window.matchMedia(`(min-width: 992px)`).addEventListener(`change`,e=>{e.matches&&n()})}function T(){let n=g.map(e=>`<li><a href="#${e.id}">${e.label}</a></li>`).join(``),r=t.map(e=>`
+  `}function C(){return e.armazon===`sidebar`?S():x()}function w(){let n=g.map(e=>`<li><a href="#${e.id}">${e.label}</a></li>`).join(``),r=t.map(e=>`
       <a href="${e.href}" target="_blank" rel="noopener noreferrer" aria-label="${e.label}">
         <i class="${e.icon}" aria-hidden="true"></i> <span>${e.label}</span>
       </a>
@@ -244,7 +242,7 @@
         © ${e.nombre} ${new Date().getFullYear()}. Todos los derechos reservados.
       </p>
     </footer>
-  `}function E({linkSelector:e=`[data-spy-link]`,offset:t=96}={}){let n=new Map;for(let t of document.querySelectorAll(e)){let e=document.getElementById(t.dataset.spyLink);e&&(n.has(e)||n.set(e,{section:e,links:[]}),n.get(e).links.push(t))}let r=[...n.values()];if(!r.length)return()=>{};let i=null,a=!1;function o(e){if(e!==i){if(i)for(let e of i.links)e.classList.remove(`is-active`),e.removeAttribute(`aria-current`);for(let t of e.links)t.classList.add(`is-active`),t.setAttribute(`aria-current`,`true`);i=e}}function s(){a=!1;let e=window.scrollY;if(e+window.innerHeight>=document.documentElement.scrollHeight-4){o(r[r.length-1]);return}let n=e+t,i=r[0];for(let t of r)if(t.section.getBoundingClientRect().top+e<=n)i=t;else break;o(i)}function c(){a||(a=!0,requestAnimationFrame(s))}return window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),window.addEventListener(`load`,c),s(),c}var D=`0px 0px -12% 0px`,O=70,k=6;function A(){let e=document.querySelectorAll(`[data-anim]`);if(!e.length)return;if(window.matchMedia(`(prefers-reduced-motion: reduce)`).matches||!(`IntersectionObserver`in window)){for(let t of e)t.classList.add(`anim-visible`);return}let t=e=>{let t=Number(e.dataset.animEspera);if(t)return t;let n=e.parentElement;if(!n||!n.hasAttribute(`data-anim-secuencia`))return 0;let r=[...n.children].filter(e=>e.hasAttribute(`data-anim`)).indexOf(e);return Math.min(r,k)*O},n=new IntersectionObserver((e,n)=>{for(let r of e){if(!r.isIntersecting)continue;let e=r.target,i=t(e);i&&(e.style.transitionDelay=`${i}ms`),e.classList.add(`anim-visible`),n.unobserve(e)}},{rootMargin:D,threshold:.05}),r=e=>{let t=e.target;t.hasAttribute(`data-anim`)&&t.style.transitionDelay&&(t.style.transitionDelay=``)};for(let t of e)t.addEventListener(`transitionend`,r,{once:!0}),n.observe(t)}function j(){let e=document.querySelectorAll(`[data-modal]`);if(e.length){for(let t of e)t.addEventListener(`click`,()=>{let e=document.querySelector(t.dataset.modal);if(!e){console.warn(`Modal no encontrado: ${t.dataset.modal}`);return}e.parentElement!==document.body&&document.body.appendChild(e),e.showModal()});for(let e of document.querySelectorAll(`dialog.modal`)){e.addEventListener(`click`,t=>{let n=e.querySelector(`.modal-caja`);if(!n)return;let r=n.getBoundingClientRect();t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom||e.close()});for(let t of e.querySelectorAll(`[data-cerrar-modal]`))t.addEventListener(`click`,()=>e.close())}}}var M=document.getElementById(`app`);document.body.dataset.armazon=e.armazon,M.innerHTML=`
+  `}function T({linkSelector:e=`[data-spy-link]`,offset:t=96}={}){let n=new Map;for(let t of document.querySelectorAll(e)){let e=document.getElementById(t.dataset.spyLink);e&&(n.has(e)||n.set(e,{section:e,links:[]}),n.get(e).links.push(t))}let r=[...n.values()];if(!r.length)return()=>{};let i=null,a=!1;function o(e){if(e!==i){if(i)for(let e of i.links)e.classList.remove(`is-active`),e.removeAttribute(`aria-current`);for(let t of e.links)t.classList.add(`is-active`),t.setAttribute(`aria-current`,`true`);i=e}}function s(){a=!1;let e=window.scrollY;if(e+window.innerHeight>=document.documentElement.scrollHeight-4){o(r[r.length-1]);return}let n=e+t,i=r[0];for(let t of r)if(t.section.getBoundingClientRect().top+e<=n)i=t;else break;o(i)}function c(){a||(a=!0,requestAnimationFrame(s))}return window.addEventListener(`scroll`,c,{passive:!0}),window.addEventListener(`resize`,c),window.addEventListener(`load`,c),s(),c}var E=`0px 0px -12% 0px`,D=70,O=6;function k(){let e=document.querySelectorAll(`[data-anim]`);if(!e.length)return;if(window.matchMedia(`(prefers-reduced-motion: reduce)`).matches||!(`IntersectionObserver`in window)){for(let t of e)t.classList.add(`anim-visible`);return}let t=e=>{let t=Number(e.dataset.animEspera);if(t)return t;let n=e.parentElement;if(!n||!n.hasAttribute(`data-anim-secuencia`))return 0;let r=[...n.children].filter(e=>e.hasAttribute(`data-anim`)).indexOf(e);return Math.min(r,O)*D},n=new IntersectionObserver((e,n)=>{for(let r of e){if(!r.isIntersecting)continue;let e=r.target,i=t(e);i&&(e.style.transitionDelay=`${i}ms`),e.classList.add(`anim-visible`),n.unobserve(e)}},{rootMargin:E,threshold:.05}),r=e=>{let t=e.target;t.hasAttribute(`data-anim`)&&t.style.transitionDelay&&(t.style.transitionDelay=``)};for(let t of e)t.addEventListener(`transitionend`,r,{once:!0}),n.observe(t)}function A(){let e=document.querySelectorAll(`[data-modal]`);if(e.length){for(let t of e)t.addEventListener(`click`,()=>{let e=document.querySelector(t.dataset.modal);if(!e){console.warn(`Modal no encontrado: ${t.dataset.modal}`);return}e.parentElement!==document.body&&document.body.appendChild(e),e.showModal()});for(let e of document.querySelectorAll(`dialog.modal`)){e.addEventListener(`click`,t=>{let n=e.querySelector(`.modal-caja`);if(!n)return;let r=n.getBoundingClientRect();t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom||e.close()});for(let t of e.querySelectorAll(`[data-cerrar-modal]`))t.addEventListener(`click`,()=>e.close())}}}var j=document.getElementById(`app`);document.body.dataset.armazon=e.armazon,j.innerHTML=`
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
   ${C()}
   <div class="app-main">
@@ -252,6 +250,6 @@
       ${h.map(e=>e.render()).join(`
 `)}
     </main>
-    ${T()}
+    ${w()}
   </div>
-`;var N=E({offset:96});w(),A(),j(),s(),f(),window.addEventListener(`load`,N),document.addEventListener(`click`,e=>{e.target.closest(`[data-filtro]`)&&setTimeout(N,60)});
+`;var M=T({offset:96});k(),A(),s(),f(),window.addEventListener(`load`,M),document.addEventListener(`click`,e=>{e.target.closest(`[data-filtro]`)&&setTimeout(M,60)});
