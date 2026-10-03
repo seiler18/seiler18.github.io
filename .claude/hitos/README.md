@@ -18,5 +18,7 @@ No se duplica información entre ellos. Para añadir un hito, ver la skill
 
 | # | Fecha | Título | Estado |
 |---|---|---|---|
+| [0004](0004-efectos-de-interaccion.md) | 2026-10-03 | Efectos de interacción en el hub | completado |
+| [0003](0003-fondo-de-puntos-en-la-portada.md) | 2026-10-03 | Fondo de puntos animado en la portada | completado |
 | [0002](0002-proyectos-publicados-y-endurecimiento.md) | 2026-09-26 | Proyectos publicados y endurecimiento | completado |
 | [0001](0001-hub-y-configurador.md) | 2026-09-19 | El hub y el configurador de sitios | completado |

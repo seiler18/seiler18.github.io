@@ -179,7 +179,7 @@ for (const m of html.matchAll(/href="#([^"]+)"/g)) {
 /* --- 8, 9 y 10. Disciplina del CSS -----------------------------------
    tokens.css es el único archivo exento: es justamente el sitio donde estos
    valores deben estar. */
-const CSS_REVISADOS = ['base.css', 'layout.css', 'components.css', 'responsive.css']
+const CSS_REVISADOS = ['base.css', 'layout.css', 'components.css', 'efectos.css', 'responsive.css']
 
 // Blancos y negros neutros no pertenecen a ninguna paleta: la sombra negra de
 // una tarjeta y el texto blanco de un botón son los mismos en todas.

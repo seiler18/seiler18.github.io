@@ -32,6 +32,14 @@ algo con sustancia, registra el hito (skill `registrar-hito`).
 - **Build:** Vite 8 (`vite.config.js` → `base: '/{{REPO}}/'`)
 - **Frontend:** HTML/CSS/JS vanilla. Sin framework, sin jQuery. Los
   componentes son funciones que devuelven strings de HTML.
+- **Fondo de la portada:** matriz de puntos en canvas 2D, adaptada de React Bits
+  (MIT + Commons Clause: se usa aquí, **no se redistribuye**). Sin
+  dependencias; vive en `src/lib/fondo-dotField.js`. Skill de WebMaker:
+  `fondos-react-bits`.
+- **Efectos de interacción:** `src/lib/efectos.js` + `src/styles/efectos.css`
+  (brillo en fichas, imán y chispas en los botones, destello del nombre). Es
+  copia del módulo del Curriculo. El título por palabras **no** sirve aquí
+  (el nombre lleva degradado recortado al texto).
 - **Iconos:** Font Awesome 6 por CDN (prefijos `fa-solid` / `fa-brands`)
 - **Tipografía:** Google Fonts
 - **Deploy:** GitHub Actions → rama `gh-pages` → GitHub Pages

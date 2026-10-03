@@ -1,0 +1,91 @@
+/* ============================================================
+   EFECTOS DE INTERACCIÓN — estilos de src/lib/efectos.js
+
+   Se importa DESPUÉS de components.css (para ganarle por orden de cascada) y
+   ANTES de responsive.css, que sigue siendo el último. Colores y duraciones
+   salen de tokens.css; este archivo también lo revisa `npm run check`.
+   ============================================================ */
+
+/* ----------------------- BRILLO QUE SIGUE AL CURSOR -----------------------
+   El JS reparte `--mx` / `--my` (posición del cursor dentro de la ficha). Va en
+   `hover: hover`, como todo hover de este proyecto: en táctil no hay cursor y
+   el resplandor se quedaría clavado donde se tocó por última vez. */
+@media (hover: hover) and (pointer: fine) {
+  .tarjeta,
+  .destacado {
+    position: relative;
+  }
+  .tarjeta::before,
+  .destacado::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    pointer-events: none; /* si no, taparía los enlaces de la ficha */
+    opacity: 0;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), var(--brillo-cursor), transparent 70%);
+    transition: opacity var(--medio) var(--curva-suave);
+  }
+  .tarjeta:hover::before,
+  .destacado:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ----------------------- CHISPAS AL PULSAR -----------------------
+   Fixed y por encima de todo, modal incluido. */
+.chispa {
+  position: fixed;
+  z-index: 2000;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: var(--acento);
+  box-shadow: 0 0 8px var(--brillo-acento);
+}
+
+/* ----------------------- BOTONES MAGNÉTICOS -----------------------
+   `translate` es una propiedad aparte de `transform`: no pisa el translateY
+   del :hover. Hay que añadirla a la lista de transiciones del botón, o el
+   desplazamiento sería a saltos. */
+.hero-btn {
+  translate: var(--mag-x, 0) var(--mag-y, 0);
+  transition:
+    transform var(--rapido) var(--curva-salida),
+    box-shadow var(--medio) var(--curva-salida),
+    background-color var(--medio) var(--curva-suave),
+    color var(--medio) var(--curva-suave),
+    translate var(--rapido) var(--curva-salida);
+}
+
+/* ----------------------- BRILLO QUE RECORRE EL NOMBRE -----------------------
+   EXCEPCIÓN A «se anima transform y opacity», y es deliberada: un destello
+   sobre texto con degradado solo se puede hacer moviendo el fondo recortado al
+   texto. Repinta UN elemento, no recalcula la maqueta, y el barrido dura ~2,4 s
+   de cada 7 (el resto queda quieto).
+   Propiedades sueltas (`background-image`, no `background`): el atajo
+   reiniciaría el `background-clip: text` que ya pone .hero-titulo y el nombre
+   se vería como un rectángulo de color. La capa de arriba es el destello; la
+   de abajo, el degradado de siempre. */
+.hero-titulo {
+  background-image:
+    linear-gradient(105deg, transparent 42%, var(--brillo-texto) 50%, transparent 58%),
+    linear-gradient(160deg, var(--blanco-titulo) 0%, var(--primario-claro) 55%, var(--acento) 100%);
+  background-size: 250% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+  background-position: 120% 0, 0 0;
+  animation: brillo-nombre var(--ciclo-brillo) linear var(--espera-brillo) infinite;
+}
+@keyframes brillo-nombre {
+  0%   { background-position: 120% 0, 0 0; }
+  35%  { background-position: -20% 0, 0 0; }
+  100% { background-position: -20% 0, 0 0; }
+}
+
+/* NOMBRE POR PALABRAS: probado y DESCARTADO en este sitio. El h1 lleva degradado
+   recortado al texto (background-clip: text) y las palabras hijas con
+   transform/animation dejan de heredar el recorte: el nombre se volvía
+   INVISIBLE (relleno transparente sin fondo detrás). Solo sirve para títulos de
+   color liso, como el del Curriculo. No volver a intentarlo aquí. */

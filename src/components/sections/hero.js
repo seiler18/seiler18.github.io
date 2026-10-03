@@ -1,5 +1,6 @@
 import { site } from '../../data/site.js'
 import { hero } from '../../data/hero.js'
+import { montarDotField } from '../../lib/fondo-dotField.js'
 
 /* ============================================================
    HERO / PORTADA
@@ -44,6 +45,9 @@ export function renderHero() {
   return `
     <header class="hero" id="inicio">
       <div class="hero-fondo" aria-hidden="true"></div>
+      <!-- Matriz de puntos animada. La monta initHero() (conducta, no render:
+           los componentes de aquí son funciones puras que no tocan el DOM). -->
+      <div class="hero-puntos" aria-hidden="true"></div>
 
       <!-- SECUENCIA DE ENTRADA DE LA PORTADA. El atributo data-anim-secuencia
            escalona a los hijos 70ms cada uno (src/lib/reveal.js), y el orden
@@ -74,4 +78,21 @@ export function renderHero() {
       </a>
     </header>
   `
+}
+
+/**
+ * Monta el fondo de puntos de la portada, tras inyectar el HTML en #app.
+ * Los colores salen de los tokens de tokens.css (--primario-claro y --acento):
+ * si cambia la paleta, cambia el fondo sin tocar este archivo.
+ */
+export function initHero() {
+  const lienzo = document.querySelector('.hero-puntos')
+  if (!lienzo) return
+  const css = getComputedStyle(document.documentElement)
+  montarDotField(lienzo, {
+    colorA: css.getPropertyValue('--primario-claro').trim() || '#8fa2ff',
+    colorB: css.getPropertyValue('--acento').trim() || '#2ee6b0',
+    opacidad: 0.6,
+    ondulacion: 2,
+  })
 }

@@ -84,6 +84,21 @@
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
 }
 
+/* MATRIZ DE PUNTOS (canvas, ver lib/fondo-dotField.js). Va entre el fondo
+   (-1, dentro del isolation del .hero) y el contenido; pointer-events:none para
+   no robar clics a los botones. La máscara la concentra tras el título y la
+   desvanece hacia los bordes y hacia abajo: sin ella la matriz acabaría en una
+   línea recta contra la primera sección, el mismo problema que resuelve la
+   máscara de .hero-fondo. */
+.hero-puntos {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  mask-image: radial-gradient(120% 90% at 50% 38%, #000 25%, transparent 80%);
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 38%, #000 25%, transparent 80%);
+}
+
 /* LUCES EN MOVIMIENTO.
    Van en su propio pseudo-elemento, y no en el `background` del .hero-fondo,
    para animarlas con `transform`: lo mueve el compositor y no repinta los

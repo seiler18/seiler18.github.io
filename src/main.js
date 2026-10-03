@@ -15,6 +15,7 @@ import './styles/tokens.css'
 import './styles/base.css'
 import './styles/layout.css'
 import './styles/components.css'
+import './styles/efectos.css'
 import './styles/responsive.css'
 
 /* --- 2. Markup --------------------------------------------------------- */
@@ -22,9 +23,11 @@ import { site } from './data/site.js'
 import { mapa } from './site-map.js'
 import { renderShell } from './components/shell.js'
 import { renderFooter } from './components/footer.js'
+import { initHero } from './components/sections/hero.js'
 import { initTarjetas } from './components/sections/tarjetas.js'
 import { initContacto } from './components/sections/contacto.js'
 
+import { initBrillo, initMagnetico, initChispas } from './lib/efectos.js'
 import { initScrollSpy } from './lib/scrollspy.js'
 import { initReveal } from './lib/reveal.js'
 import { initModales } from './lib/modal.js'
@@ -55,6 +58,13 @@ app.innerHTML = `
 const refrescarSpy = initScrollSpy({ offset: 96 })
 
 initReveal()     // animaciones de entrada
+initHero()       // fondo de puntos de la portada
+
+// Efectos de interacción (ver src/lib/efectos.js). Todos se apagan con
+// prefers-reduced-motion y los de puntero solo corren donde hay hover real.
+initBrillo('.tarjeta, .destacado')
+initMagnetico('.hero-btn')
+initChispas('.hero-btn')
 initModales()    // diálogos «ver más», si alguna sección los usa
 initTarjetas()   // botoneras de filtro de las rejillas
 initContacto()   // formulario: correo por FormSubmit o WhatsApp
