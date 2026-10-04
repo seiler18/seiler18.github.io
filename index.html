@@ -13,9 +13,15 @@
   <meta name="description" content="Auditor interno ISO y desarrollador. Sistemas de gestión multinorma, automatización y sitios web. Puerto Montt, Chile.">
   <meta name="author" content="Jesús Seiler">
   <link rel="canonical" href="https://seiler18.github.io/">
-  <!-- Pinta la barra del navegador en Android. Sin él sale gris claro y rompe
-       el tema oscuro nada más abrir. Mismo valor que --bg en tokens.css. -->
-  <meta name="theme-color" content="#05070f">
+  <!-- Pinta la barra del navegador en Android. Mismo valor que --bg del tema
+       claro en tokens.css; src/lib/tema.js lo cambia al pasar a oscuro. -->
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Tema guardado, ANTES de pintar: sin esto quien eligió oscuro ve un
+       destello blanco en cada carga. Clásico y bloqueante a propósito, y en
+       archivo aparte porque la CSP no admite scripts en línea. Vive en
+       public/, así que Vite lo copia tal cual y le antepone el `base`. -->
+  <script src="/tema-inicial.js"></script>
 
   <link rel="icon" type="image/webp" href="./assets/img/favicon.webp">
 

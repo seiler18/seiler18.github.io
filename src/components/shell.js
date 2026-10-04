@@ -79,6 +79,19 @@ function iconosRedes() {
     .join('')
 }
 
+/* Interruptor de tema claro / oscuro (conducta en src/lib/tema.js). Lleva los
+   dos iconos y el CSS enseña uno según `data-tema` en el <html>: así todas
+   las copias del botón (barra y columna) están siempre de acuerdo sin
+   sincronizarse. La etiqueta accesible la pone tema.js al arrancar. */
+function botonTema() {
+  return `
+    <button class="tema-boton" type="button" data-tema-boton aria-label="Cambiar a modo oscuro">
+      <i class="fa-solid fa-moon tema-icono-luna" aria-hidden="true"></i>
+      <i class="fa-solid fa-sun tema-icono-sol" aria-hidden="true"></i>
+    </button>
+  `
+}
+
 /* ----------------------- VARIANTE TOPBAR ----------------------- */
 function armazonTopbar() {
   return `
@@ -91,8 +104,8 @@ function armazonTopbar() {
         </nav>
 
         <!-- Fuera del <nav> a propósito: en móvil el <nav> baja a la cinta
-             inferior y las descargas tienen que quedarse arriba. -->
-        ${descargas.length ? `<div class="topbar-extras">${botonesDescarga()}</div>` : ''}
+             inferior y las descargas y el tema tienen que quedarse arriba. -->
+        <div class="topbar-extras">${botonesDescarga()}${botonTema()}</div>
       </div>
     </header>
   `
@@ -106,6 +119,7 @@ function armazonSidebar() {
       <ul class="sidenav-nav">${enlaces('nav-link')}</ul>
       <div class="sidenav-actions">
         ${botonesDescarga()}
+        ${botonTema()}
         ${redes.length ? `<div class="sidenav-social">${iconosRedes()}</div>` : ''}
       </div>
     </aside>
@@ -117,7 +131,7 @@ function armazonSidebar() {
     <header class="topbar topbar-minima">
       <div class="topbar-inner">
         ${marca('marca marca-movil')}
-        ${descargas.length ? `<div class="topbar-extras">${botonesDescarga()}</div>` : ''}
+        <div class="topbar-extras">${botonesDescarga()}${botonTema()}</div>
       </div>
     </header>
   `

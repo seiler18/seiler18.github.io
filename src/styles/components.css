@@ -84,19 +84,27 @@
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
 }
 
-/* MATRIZ DE PUNTOS (canvas, ver lib/fondo-dotField.js). Va entre el fondo
-   (-1, dentro del isolation del .hero) y el contenido; pointer-events:none para
-   no robar clics a los botones. La máscara la concentra tras el título y la
-   desvanece hacia los bordes y hacia abajo: sin ella la matriz acabaría en una
-   línea recta contra la primera sección, el mismo problema que resuelve la
-   máscara de .hero-fondo. */
-.hero-puntos {
+/* ONDAS (canvas, ver lib/fondo-waves.js). Van entre el fondo (-1, dentro del
+   isolation del .hero) y el contenido; pointer-events:none para no robar
+   clics a los botones.
+   DOS MÁSCARAS que se intersecan: la primera desvanece las líneas hacia abajo
+   (sin ella acabarían en una recta contra la primera sección, el problema que
+   resuelve también la máscara de .hero-fondo); la segunda las atenúa detrás
+   del texto, que es donde un trazo cruzando la letra cuesta leer, y las deja
+   enteras en los bordes. */
+.hero-ondas {
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  mask-image: radial-gradient(120% 90% at 50% 38%, #000 25%, transparent 80%);
-  -webkit-mask-image: radial-gradient(120% 90% at 50% 38%, #000 25%, transparent 80%);
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%),
+    radial-gradient(ellipse 34% 30% at 50% 44%, rgba(0, 0, 0, 0.3), #000 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%),
+    radial-gradient(ellipse 34% 30% at 50% 44%, rgba(0, 0, 0, 0.3), #000 100%);
+  mask-composite: intersect;
 }
 
 /* LUCES EN MOVIMIENTO.
@@ -179,20 +187,19 @@
      (`text-wrap: balance`, en base.css) se leen de un golpe de vista. */
   max-width: var(--medida-titular);
   margin-inline: auto;
-  /* Arranca en blanco, no en el primario claro: el título cae justo encima de
-     las luces del fondo y con el degradado de los títulos de sección se
-     fundía con ellas. */
-  background: linear-gradient(160deg, #ffffff 0%, var(--primario-claro) 55%, var(--acento) 100%);
+  /* Arranca en --inicio-titulo (casi negro en claro, blanco en oscuro) y no
+     en el primario claro: el título cae justo encima de las luces del fondo y
+     con el degradado de los títulos de sección se fundía con ellas. */
+  background: linear-gradient(160deg, var(--inicio-titulo) 0%, var(--primario-claro) 55%, var(--acento) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   /* CONTORNO — tiene que ser `filter: drop-shadow`, NO `text-shadow`.
      Ver la explicación completa en .section-title (layout.css): con
      `-webkit-text-fill-color: transparent` el glifo no tiene relleno y una
-     text-shadow se ve atravesando la letra. */
-  filter:
-    drop-shadow(0 0 2px rgba(0, 0, 0, 0.95))
-    drop-shadow(0 4px 12px rgba(0, 0, 0, 0.7));
+     text-shadow se ve atravesando la letra. Solo en oscuro: en claro vale
+     `none` (tokens.css). */
+  filter: var(--filtro-titulo);
 }
 .hero-lema {
   margin: 0.6rem 0 0;
@@ -200,7 +207,7 @@
   font-weight: 700;
   color: var(--primario-claro);
   /* Este sí lleva relleno, así que aquí `text-shadow` es lo correcto. */
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  text-shadow: var(--sombra-lema);
 }
 .hero-bajada {
   /* La medida en `ch` y no en px: el largo cómodo de línea depende del tamaño
@@ -610,7 +617,7 @@
   height: 1.5rem;
   padding: 0 0.35rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--lavado-fuerte);
   font-size: var(--txt-micro);
   font-weight: 700;
 }

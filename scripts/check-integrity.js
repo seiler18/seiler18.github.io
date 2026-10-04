@@ -139,8 +139,9 @@ for (const m of todoElHtml.matchAll(/(?:src|href|content)="([^"]+)"/g)) {
 for (const ruta of rutas) {
   // Las rutas del HTML son relativas a la raíz del sitio publicado, que es
   // la raíz del proyecto: Vite sirve desde ahí y copy-assets.js replica esa
-  // estructura en el dist/.
-  if (!existsSync(join(raiz, ruta))) {
+  // estructura en el dist/. Lo que vive en public/ (tema-inicial.js) también
+  // se publica en la raíz: Vite lo copia tal cual al dist/.
+  if (!existsSync(join(raiz, ruta)) && !existsSync(join(raiz, 'public', ruta))) {
     errores.push(`Archivo referenciado que no existe: ${ruta}`)
   }
 }
@@ -179,7 +180,7 @@ for (const m of html.matchAll(/href="#([^"]+)"/g)) {
 /* --- 8, 9 y 10. Disciplina del CSS -----------------------------------
    tokens.css es el único archivo exento: es justamente el sitio donde estos
    valores deben estar. */
-const CSS_REVISADOS = ['base.css', 'layout.css', 'components.css', 'efectos.css', 'responsive.css']
+const CSS_REVISADOS = ['base.css', 'layout.css', 'components.css', 'efectos.css', 'diapositivas.css', 'responsive.css']
 
 // Blancos y negros neutros no pertenecen a ninguna paleta: la sombra negra de
 // una tarjeta y el texto blanco de un botón son los mismos en todas.

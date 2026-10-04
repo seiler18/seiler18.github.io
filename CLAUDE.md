@@ -32,14 +32,28 @@ algo con sustancia, registra el hito (skill `registrar-hito`).
 - **Build:** Vite 8 (`vite.config.js` → `base: '/{{REPO}}/'`)
 - **Frontend:** HTML/CSS/JS vanilla. Sin framework, sin jQuery. Los
   componentes son funciones que devuelven strings de HTML.
-- **Fondo de la portada:** matriz de puntos en canvas 2D, adaptada de React Bits
+- **Fondo de la portada:** ondas (Waves) en canvas 2D, adaptadas de React Bits
   (MIT + Commons Clause: se usa aquí, **no se redistribuye**). Sin
-  dependencias; vive en `src/lib/fondo-dotField.js`. Skill de WebMaker:
+  dependencias; vive en `src/lib/fondo-waves.js`. Skill de WebMaker:
   `fondos-react-bits`.
+- **Diapositivas en escritorio (≥ 992px):** cada sección es una diapositiva
+  horizontal con su propia transición (`src/lib/diapositivas.js`,
+  `src/styles/diapositivas.css`). `<main>` es fijo y cada diapositiva hace
+  su propio scroll; se navega con el menú, la píldora inferior, el teclado,
+  la rueda (agrupada en gestos) o deslizando en tablet. En el celular el
+  sitio sigue siendo la página vertical. Una sección nueva, hija de `<main>`
+  con `id`, es una diapositiva más sin tocar nada.
 - **Efectos de interacción:** `src/lib/efectos.js` + `src/styles/efectos.css`
   (brillo en fichas, imán y chispas en los botones, destello del nombre). Es
   copia del módulo del Curriculo. El título por palabras **no** sirve aquí
   (el nombre lleva degradado recortado al texto).
+- **Tema claro / oscuro:** claro por defecto, oscuro a elección con el botón
+  luna/sol de la barra (`src/lib/tema.js`). Los dos temas viven en
+  `src/styles/tokens.css` (`:root` y `:root[data-tema="oscuro"]`); un color
+  nuevo que no salga de `color-mix()` necesita su pareja en el oscuro.
+  `public/tema-inicial.js` aplica el tema guardado antes de pintar. La clave
+  `seiler18:tema` la comparten el hub, sistemas-gestion y el Curriculo (mismo
+  origen): la paleta «Acero» es la misma en los tres.
 - **Iconos:** Font Awesome 6 por CDN (prefijos `fa-solid` / `fa-brands`)
 - **Tipografía:** Google Fonts
 - **Deploy:** GitHub Actions → rama `gh-pages` → GitHub Pages
@@ -92,7 +106,9 @@ publicado en `gh-pages`. ~2 minutos. Ver skill `desplegar`.
    una vez cuando solo estaban escritas.
 3. **`responsive.css` se importa el último** en `main.js`: sus overrides ganan
    por orden de cascada, sin `!important`.
-4. **Rejillas, no carruseles.** Si el contenido no cabe, se filtra.
+4. **Rejillas, no carruseles.** Si el contenido no cabe, se filtra. (Las
+   diapositivas de escritorio no rompen esto: pasan SECCIONES enteras; dentro
+   de cada una, el contenido sigue en rejilla y a la vista.)
 5. **`npm run check` antes de cualquier push.** Va dentro de `npm run build`,
    así que un fallo hace fallar el deploy en vez de llegar a producción.
 6. **Ninguna credencial en el proyecto.** GitHub Pages sirve todo en claro.

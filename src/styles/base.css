@@ -18,9 +18,8 @@ html {
   scroll-behavior: smooth;
 
   /* Reserva el alto de la barra fija en CUALQUIER salto de ancla, venga del
-     menú, del pie o de un enlace compartido. `.section` ya lleva su
-     `scroll-margin-top`, pero la portada y cualquier id que no sea una
-     sección no lo tienen, y ahí el título aterrizaba debajo de la barra. */
+     menú, del pie o de un enlace compartido. Es el ÚNICO margen de ancla del
+     sitio: un `scroll-margin-top` en las secciones se le sumaría (layout.css). */
   scroll-padding-top: calc(var(--topbar-h) + 16px);
 
   -webkit-text-size-adjust: 100%;

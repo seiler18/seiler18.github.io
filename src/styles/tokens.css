@@ -9,38 +9,149 @@
    en un componente, cambiar la identidad del sitio o el ritmo de sus
    animaciones pasa de editar un bloque a buscar por todo el CSS.
 
-   Para cambiar de identidad visual completa, sustituye el bloque de color de
-   abajo por una de las paletas de WebMaker/referencia/paletas.md. Las
-   medidas y los nombres no cambian, así que nada más se rompe.
+   El color tiene DOS temas (claro por defecto, oscuro a elección): el bloque
+   de :root es el claro y el oscuro va al final del archivo. Para cambiar de
+   identidad visual, se cambian los colores base de los dos bloques; los
+   nombres no cambian, así que nada más se rompe.
    ============================================================ */
 
 :root {
-  /* ----- Color: fondos ----- */
-  --bg:            #05070f;   /* fondo general */
-  --bg-2:          #090c17;   /* fondo alterno, para alternar secciones */
-  --surface:       #0e1220;   /* tarjetas y paneles */
-  --surface-2:     #0b0f1c;   /* paneles hundidos, campos de formulario */
+  /* ============================================================
+     COLOR — paleta «ACERO», con tema claro y oscuro
 
-  /* ----- Color: marca ----- */
-  --primario:      #4763f2;
-  --primario-claro:#8fa2ff;
-  --acento:        #2ee6b0;
+     Sustituye a la paleta «Núcleo» (índigo eléctrico + aguamarina sobre casi
+     negro) el 2026-10-04: Jesús la encontró demasiado llamativa para alguien
+     que implementa sistemas ISO. Esta es blanco, azul y un cian apagado: se
+     lee como ingeniería, no como videojuego. La comparten los tres sitios
+     personales (hub, sistemas-gestion y Curriculo) para que se reconozcan
+     como de la misma persona.
+
+     DOS TEMAS. Este bloque es el CLARO, el de por defecto. El oscuro está al
+     final del archivo (`:root[data-tema="oscuro"]`) y solo redefine los
+     colores base y los pocos valores que no se pueden derivar. Lo pone
+     src/lib/tema.js; public/tema-inicial.js lo aplica antes de pintar para
+     que quien eligió oscuro no vea un destello blanco al cargar.
+
+     CONTRASTES VERIFICADOS (WCAG AA, texto normal 4.5:1):
+                                   claro    oscuro
+       texto sobre fondo ......... 14.63    15.43
+       texto tenue sobre tarjeta .  7.58     6.72
+       acento sobre fondo ........  5.36     8.88
+       primario claro sobre fondo   5.17    10.55
+       BLANCO SOBRE --primario ...  6.70     5.17  ← el que manda en botones
+     Si tocas un color base, recalcula: en claro el acento ya va justo sobre
+     --bg-2 (4.95:1) y no admite aclararse. */
+
+  color-scheme: light;
+
+  /* ----- Color: fondos ----- */
+  --bg:            #ffffff;   /* fondo general */
+  --bg-2:          #f4f6fa;   /* fondo alterno, para alternar secciones */
+  --surface:       #ffffff;   /* tarjetas y paneles */
+  --surface-2:     #eef2f7;   /* paneles hundidos, campos de formulario */
+
+  /* ----- Color: marca -----
+     --primario-claro NO significa «más pálido» sino «el primario que se lee
+     sobre el fondo»: en claro es un azul medio, en oscuro un azul cielo. */
+  --primario:      #1d4ed8;
+  --primario-claro:#2563eb;
+  --acento:        #0e7490;
 
   /* ----- Color: texto ----- */
-  --texto:         #e8ebf5;
-  --texto-tenue:   #98a3bd;
-  --texto-fuerte:  #ffffff;
+  --texto:         #1e293b;
+  --texto-tenue:   #475569;
+  --texto-fuerte:  #0b1324;
 
   /* ----- Color: bordes y brillos ----- */
-  --borde:         rgba(255, 255, 255, 0.08);
-  --borde-vivo:    rgba(46, 230, 176, 0.42);
-  --brillo:        rgba(71, 99, 242, 0.28);
-  --brillo-acento: rgba(46, 230, 176, 0.38);
+  --borde:         rgba(15, 23, 42, 0.10);
+  --borde-vivo:    color-mix(in srgb, var(--acento) 45%, transparent);
+  --brillo:        color-mix(in srgb, var(--primario) 16%, transparent);
+  --brillo-acento: color-mix(in srgb, var(--acento) 22%, transparent);
+
+  /* ----- Color: lo que NO se puede derivar y cambia con el tema -----
+     Todo lo de aquí abajo tiene su pareja en el bloque oscuro. */
+
+  /* Fondo de una ficha con el puntero encima: un punto distinto de
+     --surface, lo justo para que se note que responde. En claro se tiñe de
+     azul; en oscuro se aclara hacia blanco. */
+  --superficie-viva:  color-mix(in srgb, var(--surface) 95%, var(--primario));
+
+  /* Fondo detrás del modal. En claro, pizarra translúcida; en oscuro, casi
+     negro. Que lo que hay detrás deje de competir por la atención. */
+  --velo-modal:       color-mix(in srgb, var(--texto-fuerte) 55%, transparent);
+
+  /* Luces del fondo en movimiento (portada). En claro van MUY bajas: sobre
+     blanco, el 42% del tema oscuro es una mancha azul, no una luz. */
+  --brillo-movil:        color-mix(in srgb, var(--primario) 12%, transparent);
+  --brillo-movil-acento: color-mix(in srgb, var(--acento) 10%, transparent);
+  --brillo-movil-frio:   color-mix(in srgb, var(--primario-claro) 8%, transparent);
+
+  /* Fondo de cada diapositiva (styles/diapositivas.css). Opaco, con una luz
+     propia que alterna de lado: en modo diapositivas las páginas tapan los
+     halos del <body>. Sale de los brillos de arriba, así que cambia solo con
+     el tema. */
+  --fondo-diapo:
+    radial-gradient(900px circle at 10% 8%, var(--brillo-movil), transparent 50%),
+    radial-gradient(800px circle at 92% 95%, var(--brillo-movil-frio), transparent 48%),
+    var(--bg);
+  --fondo-diapo-par:
+    radial-gradient(900px circle at 90% 8%, var(--brillo-movil-acento), transparent 50%),
+    radial-gradient(800px circle at 8% 92%, var(--brillo-movil), transparent 48%),
+    var(--bg-2);
+
+  /* Opacidad de las ondas de la portada (lib/fondo-waves.js la lee de aquí).
+     En claro, líneas azules sobre blanco: más presentes que en oscuro, donde
+     las mismas líneas claras sobre pizarra brillan el doble. */
+  --opacidad-ondas: 0.55;
+
+  /* Contorno de los títulos con degradado recortado al texto (ver
+     .section-title en layout.css). Sobre fondo oscuro despega el título;
+     sobre blanco ensucia la letra, así que en claro no hay. */
+  --filtro-titulo:  none;
+  --sombra-lema:    none;
+
+  /* El nombre de la portada arranca en este color y va hacia el primario y
+     el acento. En claro, casi negro azulado; en oscuro, blanco. */
+  --inicio-titulo:  var(--texto-fuerte);
+
+  /* ----- Color: estados ----- */
+  --ok:            #047857;
+  --error:         #b91c1c;
+
+  /* ----- Color: efectos de interacción (efectos.css) ----- */
+  --brillo-cursor: color-mix(in srgb, var(--primario) 7%, transparent); /* resplandor que sigue al cursor */
+  --brillo-texto:  rgba(255, 255, 255, 0.85);                          /* destello que recorre el nombre */
+
+  /* ----- Sombras -----
+     En claro son las que despegan la tarjeta blanca del fondo blanco: sin
+     ellas solo queda el borde. Tintadas de pizarra y no negras: una sombra
+     negra sobre blanco se lee como suciedad. */
+  --sombra:         0 12px 32px rgba(15, 23, 42, 0.08);
+  --sombra-suave:   0 4px 14px rgba(15, 23, 42, 0.06);
+  --sombra-alta:    0 18px 40px rgba(15, 23, 42, 0.12);
+  --sombra-lateral: 4px 0 24px rgba(15, 23, 42, 0.06);   /* columna lateral */
+  --sombra-cinta:   0 -4px 18px rgba(15, 23, 42, 0.08);  /* cinta inferior del móvil */
+
+  /* ----- Degradados -----
+     TRES, y la diferencia importa:
+
+       --degradado         DECORATIVO. Reglas, separadores, acentos, barras:
+                           superficies donde NO se apoya ningún texto.
+       --degradado-solido  El que lleva TEXTO BLANCO ENCIMA (botones,
+                           píldoras, monogramas, contadores de un filtro).
+       --degradado-texto   El que se recorta AL PROPIO texto (títulos).
+
+     Los dos primeros NO son intercambiables. En claro coinciden porque los
+     dos extremos ya pasan de 5:1 con blanco encima; en oscuro el acento es
+     un cian claro (blanco encima: ~2:1) y --degradado-solido lo oscurece.
+     Por eso --degradado-solido se redefine en el bloque oscuro. */
+  --degradado:       linear-gradient(135deg, var(--primario) 0%, var(--acento) 100%);
+  --degradado-solido:linear-gradient(135deg, var(--primario) 0%, var(--acento) 100%);
+  --degradado-texto: linear-gradient(135deg, var(--primario-claro) 0%, var(--acento) 100%);
 
   /* ----- Color: DERIVADOS -----
-     NO SE TOCAN AL CAMBIAR DE PALETA. Salen con `color-mix()` de los colores
-     de arriba, así que cambian solos: una paleta nueva solo tiene que definir
-     los tokens base y estos se recalculan.
+     NO SE TOCAN AL CAMBIAR DE PALETA NI DE TEMA. Salen con `color-mix()` de
+     los colores de arriba, así que cambian solos.
 
      Existen porque en el primer sitio hecho con esta plantilla estos colores
      estaban escritos a mano como `rgba(37, 99, 235, …)` dentro de
@@ -51,74 +162,24 @@
      escribas en el componente. */
 
   /* Lavados del primario: fondo del enlace activo, icono de tarjeta. */
-  --primario-tenue:        color-mix(in srgb, var(--primario) 16%, transparent);
-  --primario-tenue-fuerte: color-mix(in srgb, var(--primario) 26%, transparent);
+  --primario-tenue:        color-mix(in srgb, var(--primario) 10%, transparent);
+  --primario-tenue-fuerte: color-mix(in srgb, var(--primario) 18%, transparent);
 
-  /* Fondo de una ficha con el puntero encima: un punto más claro que
-     --surface, lo justo para que se note que responde. */
-  --superficie-viva:  color-mix(in srgb, var(--surface) 92%, #ffffff);
+  /* Lavado neutro para el :hover de un enlace o un contador. Sale del texto
+     fuerte, así que oscurece en claro y aclara en oscuro sin tocarlo. */
+  --lavado:        color-mix(in srgb, var(--texto-fuerte) 5%, transparent);
+  --lavado-fuerte: color-mix(in srgb, var(--texto-fuerte) 9%, transparent);
 
   /* Fondos translúcidos. Llevan alfa porque encima tienen
      `backdrop-filter: blur`: un color opaco anularía el difuminado. */
-  --barra-fondo:       color-mix(in srgb, var(--bg) 82%, transparent);
+  --barra-fondo:       color-mix(in srgb, var(--bg) 85%, transparent);
   --barra-fondo-opaca: color-mix(in srgb, var(--bg) 97%, transparent);
   --velo:              color-mix(in srgb, var(--bg) 55%, transparent);
   --superficie-velada: color-mix(in srgb, var(--bg-2) 60%, transparent);
 
-  /* Fondo detrás del modal: más oscuro que --velo y casi opaco, porque lo que
-     hay detrás tiene que dejar de competir por la atención. Derivado y no
-     literal para que en una paleta clara no siga siendo azul marino. */
-  --velo-modal:        color-mix(in srgb, var(--bg) 72%, #000000);
-
   /* Marca de agua de los campos del formulario. Derivada por lo mismo: un
      gris fijo se vuelve ilegible en cuanto el fondo cambia. */
   --texto-marca:       color-mix(in srgb, var(--texto-tenue) 70%, transparent);
-
-  /* Luces del fondo en movimiento (portada y halos de página). Bastante más
-     opacas que --brillo y --brillo-acento: una luz casi transparente se
-     desplaza sin que nadie lo perciba, y el fondo parece estático. Los tenues
-     siguen para bordes, sombras e iconos, donde deben ser discretos. */
-  --brillo-movil:        color-mix(in srgb, var(--primario) 42%, transparent);
-  --brillo-movil-acento: color-mix(in srgb, var(--acento) 30%, transparent);
-  --brillo-movil-frio:   color-mix(in srgb, var(--primario-claro) 24%, transparent);
-
-  /* ----- Color: estados ----- */
-  --ok:            #34d399;
-  --error:         #f87171;
-
-  /* ----- Color: efectos de interacción (efectos.css) ----- */
-  --brillo-cursor: color-mix(in srgb, var(--acento) 14%, transparent); /* resplandor que sigue al cursor */
-  --brillo-texto:  rgba(255, 255, 255, 0.75);                         /* destello que recorre el nombre */
-  --blanco-titulo: #ffffff;                                           /* arranque del degradado del nombre */
-
-  /* ----- Degradados -----
-     TRES, y la diferencia importa:
-
-       --degradado         DECORATIVO. Reglas, separadores, acentos, barras:
-                           superficies donde NO se apoya ningún texto.
-       --degradado-solido  El que lleva TEXTO ENCIMA (botones, píldoras,
-                           monogramas, contadores de un filtro activo).
-       --degradado-texto   El que se recorta AL PROPIO texto (títulos).
-
-     Los dos primeros NO son intercambiables. El acento de una paleta suele
-     ser un color claro y saturado —aquí un cyan— y el blanco encima de él da
-     del orden de 1,8:1 de contraste: ilegible, muy por debajo del 4,5:1 que
-     exige la norma. En el proyecto original de esta plantilla el botón
-     principal del formulario de contacto era exactamente eso, y nadie lo vio
-     porque el extremo azul sí se leía bien.
-
-     --degradado-solido se DERIVA con color-mix en vez de escribirse a mano
-     para que siga funcionando al cambiar de paleta: oscurece los dos extremos
-     hasta que el blanco encima pasa de 5:1. Con la paleta por defecto da
-     7,0:1 y 5,5:1.
-
-     OJO con una paleta CLARA: esto asume texto blanco encima. Con texto
-     oscuro hay que mezclar con #ffffff en vez de #000000 y volver a medir. */
-  --degradado:       linear-gradient(135deg, var(--primario) 0%, var(--acento) 100%);
-  --degradado-solido:linear-gradient(135deg,
-                       color-mix(in srgb, var(--primario) 82%, #000000) 0%,
-                       color-mix(in srgb, var(--acento) 55%, #000000) 100%);
-  --degradado-texto: linear-gradient(135deg, var(--primario-claro) 0%, var(--acento) 100%);
 
   /* ============================================================
      TIPOGRAFÍA
@@ -220,6 +281,17 @@
   --medio:  240ms;
   --lento:  420ms;
 
+  /* Duración del círculo que descubre el tema nuevo (src/lib/tema.js). Más
+     larga que --lento: es un cambio de TODA la página y tiene que leerse como
+     un gesto, no como un parpadeo. */
+  --cambio-tema: 600ms;
+
+  /* Cambio de diapositiva (escritorio). Bastante más que --lento: es una
+     página entera la que se va y otra la que llega, y por debajo de ~600ms
+     el cubo o el barrido se leen como un parpadeo y no como un gesto. Por
+     encima de ~900ms, el visitante espera a la página en vez de leerla. */
+  --diapo-duracion: 760ms;
+
   /* Curvas. `ease` a secas arranca despacio, y en una respuesta al puntero
      eso se siente como retraso. --curva-salida arranca rápido y aterriza
      suave: es la de casi todo. --curva-entrada es para lo que se va (sale
@@ -227,6 +299,9 @@
   --curva-salida:  cubic-bezier(0.22, 0.61, 0.36, 1);
   --curva-entrada: cubic-bezier(0.55, 0, 0.55, 0.2);
   --curva-suave:   cubic-bezier(0.4, 0, 0.2, 1);
+  /* Simétrica y marcada (arranca y frena despacio): la de un objeto con
+     masa. Es la de las diapositivas, donde la página entera se mueve. */
+  --curva-diapo:   cubic-bezier(0.65, 0, 0.35, 1);
 
   /* Escalonado de las entradas: retardo entre un elemento y el siguiente de
      la misma secuencia. Lo aplica src/lib/reveal.js. 70ms es el punto en el
@@ -269,15 +344,15 @@
   --topbar-h:      64px;
   --barra-movil-h: 62px;
 
+  /* Diapositivas: hueco inferior que reservan para que la píldora de
+     controles no tape el final del contenido, y profundidad del cubo. */
+  --diapo-hueco-pie:   6rem;
+  --perspectiva-diapo: 1800px;
+
   /* Ancho de lectura del contenido. Más de ~1180px y las líneas de texto se
      hacen incómodamente largas en un monitor ancho. */
   --ancho-max:     1180px;
   --ancho-texto:   var(--medida-cuerpo);
-
-  /* ----- Sombras ----- */
-  --sombra:        0 12px 40px rgba(0, 0, 0, 0.45);
-  --sombra-suave:  0 6px 20px rgba(0, 0, 0, 0.30);
-  --sombra-alta:   0 18px 44px rgba(0, 0, 0, 0.45);
 
   /* ----- Capas -----
      Escala explícita para no ir adivinando. El modal usa <dialog>, que el
@@ -287,4 +362,97 @@
   --z-barra:       100;
   --z-sidebar:     110;
   --z-menu-movil:  120;
+}
+
+/* ============================================================
+   TEMA OSCURO
+
+   Lo pone src/lib/tema.js en el <html> cuando el visitante lo elige (y
+   public/tema-inicial.js al cargar, antes de pintar). Redefine SOLO los
+   colores base y los valores que no se pueden derivar: los derivados con
+   color-mix() del bloque de arriba se recalculan solos, porque se declaran en
+   el mismo elemento.
+
+   Si añades un token de color al bloque claro y su valor no sale de
+   color-mix(), casi seguro necesita su pareja aquí. Síntoma de que falta:
+   algo que se ve bien en claro y en oscuro queda como un parche blanco.
+   ============================================================ */
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+
+  /* Pizarra azulada, no negro: el negro puro con texto blanco cansa y se lee
+     más «gamer» que técnico. */
+  --bg:            #0a101c;
+  --bg-2:          #0d1422;
+  --surface:       #121b2c;
+  --surface-2:     #0e1625;
+
+  --primario:      #2563eb;   /* el más claro que aún deja 5.17:1 con blanco encima */
+  --primario-claro:#93c5fd;
+  --acento:        #38bdf8;
+
+  --texto:         #e2e8f0;
+  --texto-tenue:   #94a3b8;
+  --texto-fuerte:  #ffffff;
+
+  --borde:         rgba(255, 255, 255, 0.08);
+  --brillo:        color-mix(in srgb, var(--primario) 28%, transparent);
+  --brillo-acento: color-mix(in srgb, var(--acento) 32%, transparent);
+
+  --superficie-viva:  color-mix(in srgb, var(--surface) 92%, #ffffff);
+  --velo-modal:       color-mix(in srgb, var(--bg) 72%, #000000);
+
+  --brillo-movil:        color-mix(in srgb, var(--primario) 34%, transparent);
+  --brillo-movil-acento: color-mix(in srgb, var(--acento) 18%, transparent);
+  --brillo-movil-frio:   color-mix(in srgb, var(--primario-claro) 16%, transparent);
+
+  /* CONTORNO — tiene que ser `filter: drop-shadow`, NO `text-shadow` (ver
+     .section-title en layout.css). */
+  --filtro-titulo:
+    drop-shadow(0 0 1px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.75));
+  --sombra-lema:    0 1px 3px rgba(0, 0, 0, 0.85);
+  --inicio-titulo:  #ffffff;
+  --opacidad-ondas: 0.4;
+
+  --ok:            #34d399;
+  --error:         #f87171;
+
+  --brillo-cursor: color-mix(in srgb, var(--acento) 12%, transparent);
+  --brillo-texto:  rgba(255, 255, 255, 0.75);
+
+  --sombra:         0 12px 40px rgba(0, 0, 0, 0.45);
+  --sombra-suave:   0 6px 20px rgba(0, 0, 0, 0.30);
+  --sombra-alta:    0 18px 44px rgba(0, 0, 0, 0.45);
+  --sombra-lateral: 4px 0 30px rgba(0, 0, 0, 0.45);
+  --sombra-cinta:   0 -6px 26px rgba(0, 0, 0, 0.55);
+
+  /* Oscurece los extremos hasta que el blanco encima pasa de 5:1 (≈6.7 y
+     ≈6.3 con estos colores). */
+  --degradado-solido:linear-gradient(135deg,
+                       color-mix(in srgb, var(--primario) 85%, #000000) 0%,
+                       color-mix(in srgb, var(--acento) 55%, #000000) 100%);
+
+  --primario-tenue:        color-mix(in srgb, var(--primario) 16%, transparent);
+  --primario-tenue-fuerte: color-mix(in srgb, var(--primario) 26%, transparent);
+  --barra-fondo:           color-mix(in srgb, var(--bg) 82%, transparent);
+}
+
+/* ----------------------- CAMBIO DE TEMA -----------------------
+   Un círculo que crece desde el botón y descubre la página con el tema nuevo
+   (View Transitions). Solo mientras `data-cambiando-tema` está puesto, para
+   no interferir con ninguna otra transición. Donde el navegador no lo
+   soporta, o con prefers-reduced-motion, tema.js cambia sin animación y
+   esto no llega a usarse. Las variables --tema-x/y/r las pone tema.js. */
+:root[data-cambiando-tema]::view-transition-old(root),
+:root[data-cambiando-tema]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+:root[data-cambiando-tema]::view-transition-new(root) {
+  animation: descubrir-tema var(--cambio-tema) var(--curva-suave) both;
+}
+@keyframes descubrir-tema {
+  from { clip-path: circle(0 at var(--tema-x, 50%) var(--tema-y, 0)); }
+  to   { clip-path: circle(var(--tema-r, 150vmax) at var(--tema-x, 50%) var(--tema-y, 0)); }
 }

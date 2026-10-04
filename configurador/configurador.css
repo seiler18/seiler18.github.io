@@ -3,8 +3,9 @@
 
    DOS SISTEMAS DE COLOR CONVIVEN EN ESTA PÁGINA, y no hay que mezclarlos:
 
-     · Los tokens `--ui-*` son la piel del configurador. Son fijos: la
-       paleta «Núcleo» del hub.
+     · Los tokens `--ui-*` son la piel del configurador: la paleta «Acero»
+       del hub, en claro por defecto y en oscuro si el visitante lo eligió en
+       el hub (../tema-inicial.js lee esa elección; aquí no hay botón).
      · Los tokens `--p-*` son la paleta QUE EL CLIENTE ESTÁ ELIGIENDO. Solo
        valen dentro de `.maqueta`, donde los escribe el JS en cada cambio.
 
@@ -14,17 +15,20 @@
    ============================================================ */
 
 :root {
-  --ui-bg: #05070f;
-  --ui-bg-2: #090c17;
-  --ui-surface: #0e1220;
-  --ui-surface-2: #0b0f1c;
-  --ui-primario: #4763f2;
-  --ui-primario-claro: #8fa2ff;
-  --ui-acento: #2ee6b0;
-  --ui-texto: #e8ebf5;
-  --ui-tenue: #98a3bd;
-  --ui-borde: rgba(255, 255, 255, 0.08);
-  --ui-borde-vivo: rgba(46, 230, 176, 0.42);
+  color-scheme: light;
+  --ui-bg: #ffffff;
+  --ui-bg-2: #f4f6fa;
+  --ui-surface: #ffffff;
+  --ui-surface-2: #eef2f7;
+  --ui-primario: #1d4ed8;
+  --ui-primario-claro: #2563eb;
+  --ui-acento: #0e7490;
+  --ui-texto: #1e293b;
+  --ui-tenue: #475569;
+  --ui-borde: rgba(15, 23, 42, 0.12);
+  --ui-borde-vivo: color-mix(in srgb, var(--ui-acento) 45%, transparent);
+  --ui-error: #b91c1c;
+  --ui-error-texto: #b91c1c;
 
   --fuente-titulos: 'Space Grotesk', system-ui, sans-serif;
   --fuente-texto: 'Inter', system-ui, sans-serif;
@@ -38,6 +42,23 @@
   /* Zona pulsable mínima en pantalla táctil. No se toca el tamaño de la
      letra para conseguirla: se toca el alto del control. */
   --toque-min: 44px;
+}
+
+/* Tema oscuro: los mismos valores que el bloque oscuro de src/styles/tokens.css. */
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+  --ui-bg: #0a101c;
+  --ui-bg-2: #0d1422;
+  --ui-surface: #121b2c;
+  --ui-surface-2: #0e1625;
+  --ui-primario: #2563eb;
+  --ui-primario-claro: #93c5fd;
+  --ui-acento: #38bdf8;
+  --ui-texto: #e2e8f0;
+  --ui-tenue: #94a3b8;
+  --ui-borde: rgba(255, 255, 255, 0.08);
+  --ui-error: #f87171;
+  --ui-error-texto: #fca5a5;
 }
 
 * { box-sizing: border-box; }
@@ -240,12 +261,12 @@ input:hover, select:hover, textarea:hover { border-color: var(--ui-borde-vivo); 
 /* Solo se marca en rojo lo que el visitante YA tocó y dejó mal. Pintar de
    rojo un formulario recién abierto es agresivo y no informa de nada. */
 .campo.error input,
-.campo.error textarea { border-color: #f87171; }
+.campo.error textarea { border-color: var(--ui-error); }
 .campo-error {
   display: block;
   margin-top: 0.35rem;
   font-size: 0.8rem;
-  color: #fca5a5;
+  color: var(--ui-error-texto);
 }
 
 /* ----------------------- SECCIONES Y CASILLAS ----------------------- */
@@ -390,7 +411,7 @@ input:hover, select:hover, textarea:hover { border-color: var(--ui-borde-vivo); 
   font-weight: 600;
 }
 .estado.ok { color: var(--ui-acento); }
-.estado.mal { color: #fca5a5; }
+.estado.mal { color: var(--ui-error-texto); }
 
 .legal {
   margin: 1.25rem 0 0;

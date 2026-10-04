@@ -84,7 +84,7 @@
     backdrop-filter: blur(16px);
     border-right: none;
     border-top: 1px solid var(--borde);
-    box-shadow: 0 -6px 26px rgba(0, 0, 0, 0.55);
+    box-shadow: var(--sombra-cinta);
     overflow-x: auto;
     overflow-y: hidden;
   }
@@ -249,4 +249,24 @@
     padding: 2.5rem 1.25rem 3rem;
   }
   .hero-cinta { margin-top: 1.5rem; padding-top: 1rem; }
+}
+
+/* Zona pulsable del botón de tema en táctil (regla de los 44px): se agranda
+   el círculo, no el icono. */
+@media (pointer: coarse) {
+  .tema-boton { width: var(--toque-min); height: var(--toque-min); }
+}
+
+/* Ondas de la portada en pantalla estrecha: el texto ocupa casi todo el
+   ancho, así que la zona atenuada (components.css) se ensancha con él. Con la
+   elipse de escritorio las líneas cruzaban la bajada en el celular. */
+@media (max-width: 991.98px) {
+  .hero-ondas {
+    -webkit-mask-image:
+      linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%),
+      radial-gradient(ellipse 75% 42% at 50% 42%, rgba(0, 0, 0, 0.22), #000 100%);
+    mask-image:
+      linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%),
+      radial-gradient(ellipse 75% 42% at 50% 42%, rgba(0, 0, 0, 0.22), #000 100%);
+  }
 }

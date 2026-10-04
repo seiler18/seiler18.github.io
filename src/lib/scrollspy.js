@@ -20,10 +20,13 @@
  *                 sitúa la «línea de lectura». Debe ser >= al alto de la
  *                 barra fija, o una sección se marcaría activa antes de
  *                 asomar por debajo de ella.
+ * @param {() => boolean} [opts.pausado] Mientras devuelva true no se calcula
+ *                 nada: en modo diapositivas no hay scroll de página y el
+ *                 resaltado lo pone src/lib/diapositivas.js.
  * @returns {() => void} Fuerza un recálculo. Útil tras cambios de altura
  *                 (imágenes que cargan, un filtro que oculta tarjetas…).
  */
-export function initScrollSpy({ linkSelector = '[data-spy-link]', offset = 96 } = {}) {
+export function initScrollSpy({ linkSelector = '[data-spy-link]', offset = 96, pausado = () => false } = {}) {
   // Puede haber DOS enlaces por sección (escritorio y móvil conviven en el
   // DOM), así que se agrupan por sección y se marcan todos a la vez.
   const porSeccion = new Map()
@@ -41,9 +44,11 @@ export function initScrollSpy({ linkSelector = '[data-spy-link]', offset = 96 } 
   let encolado = false
 
   function activar(target) {
-    if (target === activo) return
-    if (activo) {
-      for (const l of activo.links) {
+    // Se limpian TODOS los enlaces y no solo los del activo anterior: el modo
+    // diapositivas también los marca, y al volver a la página vertical el
+    // activo recordado aquí puede no ser el que está pintado.
+    for (const t of targets) {
+      for (const l of t.links) {
         l.classList.remove('is-active')
         l.removeAttribute('aria-current')
       }
@@ -58,6 +63,7 @@ export function initScrollSpy({ linkSelector = '[data-spy-link]', offset = 96 } 
 
   function actualizar() {
     encolado = false
+    if (pausado()) return
     const scrollY = window.scrollY
 
     // Al final del documento gana siempre la última sección: una sección

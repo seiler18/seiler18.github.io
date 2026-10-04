@@ -82,7 +82,43 @@ body[data-armazon="sidebar"] .topbar {
   flex-wrap: nowrap;
   gap: 0.15rem;
 }
-.topbar-extras { display: flex; gap: 0.5rem; }
+.topbar-extras { display: flex; align-items: center; gap: 0.5rem; }
+
+/* ----------------------- INTERRUPTOR DE TEMA -----------------------
+   Botón redondo de icono. Los dos iconos van dentro y aquí se enseña el de la
+   ACCIÓN: la luna en claro (pasar a oscuro), el sol en oscuro. */
+.tema-boton {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--texto-tenue);
+  font-size: var(--txt-ui);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    color var(--medio) var(--curva-suave),
+    border-color var(--medio) var(--curva-suave),
+    background-color var(--medio) var(--curva-suave),
+    transform var(--rapido) var(--curva-salida);
+}
+.tema-boton:active { transform: translateY(var(--hunde)); }
+.tema-boton:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.tema-icono-sol { display: none; }
+:root[data-tema="oscuro"] .tema-icono-sol { display: inline; }
+:root[data-tema="oscuro"] .tema-icono-luna { display: none; }
+@media (hover: hover) {
+  .tema-boton:hover {
+    color: var(--texto-fuerte);
+    border-color: var(--borde-vivo);
+    background: var(--lavado);
+  }
+}
 
 /* ----------------------- MARCA ----------------------- */
 .marca {
@@ -188,7 +224,7 @@ body[data-armazon="topbar"] .topbar .marca-lema { display: none; }
 
 @media (hover: hover) {
   .marca:hover { color: var(--texto-fuerte); }
-  .nav-link:hover { color: var(--texto-fuerte); background: rgba(255, 255, 255, 0.05); }
+  .nav-link:hover { color: var(--texto-fuerte); background: var(--lavado); }
   .nav-link:hover i { color: var(--acento); }
 }
 
@@ -228,7 +264,7 @@ body[data-armazon="topbar"] .topbar .marca-lema { display: none; }
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border-right: 1px solid var(--borde);
-  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--sombra-lateral);
   overflow-y: auto;
 }
 
@@ -297,10 +333,11 @@ body[data-armazon="topbar"] .topbar .marca-lema { display: none; }
 body[data-armazon="sidebar"] .marca-movil { display: none; }
 
 /* ----------------------- SECCIONES -----------------------
-   `scroll-margin-top` evita que la barra fija tape el título al saltar a un
-   ancla. Sin él, el enlace lleva el título justo debajo de la barra. */
+   SIN `scroll-margin-top`: el hueco de la barra fija al saltar a un ancla ya
+   lo reserva `scroll-padding-top` en el <html> (base.css), y los dos SE
+   SUMAN. Con ambos, la sección aterrizaba a 160px del borde, por debajo de
+   la línea de lectura del scroll-spy (96px), y el menú marcaba la anterior. */
 .section {
-  scroll-margin-top: calc(var(--topbar-h) + 16px);
   padding: 3.5rem 0;
 }
 .section + .section { padding-top: 2rem; }
@@ -342,7 +379,7 @@ body[data-armazon="sidebar"] .marca-movil { display: none; }
   background-clip: text;
   -webkit-text-fill-color: transparent;
 
-  /* CONTORNO OSCURO — y tiene que ser `filter: drop-shadow`, NO `text-shadow`.
+  /* CONTORNO OSCURO (solo en el tema oscuro) — y tiene que ser `filter: drop-shadow`, NO `text-shadow`.
      Con `-webkit-text-fill-color: transparent` el glifo no tiene relleno
      propio: una `text-shadow` se pinta DEBAJO y se ve atravesando la letra,
      sucia. `drop-shadow` actúa sobre el resultado ya recortado, así que dibuja
@@ -350,9 +387,7 @@ body[data-armazon="sidebar"] .marca-movil { display: none; }
      Dos sombras: una pegada al trazo (define el borde) y otra abierta (da
      profundidad). Alguien intentará «simplificar» esto a una text-shadow;
      este comentario es para que no lo haga. */
-  filter:
-    drop-shadow(0 0 1px rgba(0, 0, 0, 0.95))
-    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.75));
+  filter: var(--filtro-titulo);   /* en claro, `none` (tokens.css) */
 }
 .section-rule {
   width: 90px;

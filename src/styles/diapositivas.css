@@ -1,0 +1,346 @@
+/* ============================================================
+   DIAPOSITIVAS — estilos de src/lib/diapositivas.js (solo escritorio)
+
+   Todo cuelga de `body[data-diapositivas]` o de la clase `.diapo`, que el JS
+   pone únicamente a partir de 992px. Por debajo nada de esto existe y el
+   sitio es la página vertical de siempre.
+
+   Se importa DESPUÉS de efectos.css y ANTES de responsive.css. Los selectores
+   de diapositiva empiezan por `#contenido >`: el id les da peso para ganar a
+   `.section + .section` y a `.hero` sin un solo !important.
+
+   EXCEPCIÓN A «se anima transform y opacity», como en el destello del nombre:
+   tres transiciones (barrido, cortina, iris) animan `clip-path`. Dura lo que
+   dura el cambio de página (--diapo-duracion) y no recalcula la maqueta: solo
+   repinta la diapositiva que entra.
+   ============================================================ */
+
+body[data-diapositivas] { overflow: hidden; }
+body[data-diapositivas] .app-main { min-height: 0; padding-top: 0; }
+
+body[data-diapositivas] #contenido {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-contenido);
+  overflow: hidden;
+  /* Profundidad para la transición «cubo». Sin perspectiva el giro en Y se
+     ve plano, como una diapositiva que encoge. */
+  perspective: var(--perspectiva-diapo);
+}
+body[data-armazon="sidebar"][data-diapositivas] #contenido { left: var(--sidebar-w); }
+
+/* ----------------------- LA DIAPOSITIVA -----------------------
+   Fuera del cuadro mientras no está activa (translate 100%), no solo oculta:
+   así el IntersectionObserver de reveal.js y el del fondo de la portada la
+   dan por NO visible, las tarjetas entran animadas cuando la diapositiva
+   llega y las ondas no gastan fotogramas detrás de otra página. */
+#contenido > .diapo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+  padding: calc(var(--topbar-h) + 1.75rem) 0 var(--diapo-hueco-pie);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--fondo-diapo);
+  visibility: hidden;
+  transform: translate3d(100%, 0, 0);
+  backface-visibility: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--borde-vivo) transparent;
+}
+/* Fondo opaco con su propia luz, alternando el lado: los halos del <body>
+   quedan tapados por las diapositivas, y dos páginas transparentes se
+   mezclarían durante la transición. */
+#contenido > .diapo:nth-child(even) { background: var(--fondo-diapo-par); }
+#contenido > .diapo:focus { outline: none; }
+
+/* `justify-content: center` a secas, en una caja con scroll propio, CORTA el
+   principio del contenido cuando no cabe: queda por encima del borde y el
+   scroll no llega a él. `safe center` centra solo si cabe; el navegador que
+   no lo entienda descarta la línea y se queda con flex-start. */
+#contenido > .hero.diapo {
+  justify-content: flex-start;
+  justify-content: safe center;
+}
+
+
+#contenido > .diapo.activa,
+#contenido > .diapo.saliendo {
+  visibility: visible;
+  transform: none;
+}
+#contenido > .diapo.entrando { z-index: 2; }
+#contenido > .diapo.saliendo { z-index: 1; }
+
+/* Centrado vertical si el contenido cabe; si no cabe, `margin: auto` vale
+   cero y la diapositiva hace scroll desde arriba. `justify-content: center`
+   haría lo primero pero cortaría el principio del contenido en lo segundo. */
+/* Ningún hijo de la diapositiva se encoge para caber: en una columna flex de
+   alto fijo lo harían, y el que recorta lo que desborda (la cinta de
+   insignias del CV) se quedaba aplastado a una franja. Lo que no cabe, se
+   desplaza. */
+#contenido > .diapo > * { flex-shrink: 0; }
+
+#contenido > .diapo > .section-inner,
+#contenido > .diapo > .hero-contenido { margin-block: auto; }
+
+/* El rombo separador marcaba el corte entre secciones apiladas: aquí cada
+   sección es su propia página. Y la cabecera se acerca al contenido: cada
+   línea que se ahorra es contenido que cabe sin scroll en un portátil. */
+#contenido > .diapo > .section-divider { display: none; }
+#contenido > .diapo .section-head { margin-bottom: 1.75rem; }
+
+/* Queda contenido debajo: el borde inferior se desvanece en vez de cortar
+   en seco una tarjeta por la mitad (diapositivas.js pone `.con-mas`). La
+   máscara es de la caja, no del contenido, así que el desvanecido se queda
+   abajo mientras se desplaza. */
+#contenido > .diapo.con-mas {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 9rem), transparent calc(100% - 1.5rem));
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 9rem), transparent calc(100% - 1.5rem));
+}
+
+/* La portada: a pantalla completa y sin su indicador de «hay más abajo»,
+   que aquí apuntaría al sitio equivocado (lo sustituye la píldora). Sus
+   capas de fondo recortan lo que desborda para no crear scroll fantasma. */
+#contenido > .hero.diapo {
+  padding: calc(var(--topbar-h) + 2rem) 1.5rem var(--diapo-hueco-pie);
+  background: var(--fondo-diapo);
+}
+/* Fijas, las capas del fondo de la portada tienen por caja #contenido (que
+   lleva `perspective` y por eso hace de contenedor de lo fijo): cubren
+   siempre la zona visible aunque se desplace el contenido de la portada, y
+   al animar las arrastra el transform de la diapositiva. Absolutas medían
+   una pantalla y, en una ventana baja, al bajar dejaban una franja sin fondo. */
+body[data-diapositivas] .hero-fondo,
+body[data-diapositivas] .hero-ondas { position: fixed; overflow: hidden; }
+body[data-diapositivas] .hero-scroll { display: none; }
+
+/* El pie se muda al final de la última diapositiva (diapositivas.js). */
+#contenido > .diapo > .pie { margin-top: 3rem; }
+
+/* ----------------------- TRANSICIONES -----------------------
+   El JS pone en #contenido `data-trans` (cuál), `data-dir` (adelante/atrás)
+   y `--dir` (1 o -1, para multiplicar desplazamientos). La que entra va por
+   encima de la que sale. */
+#contenido[data-trans] > .diapo.entrando,
+#contenido[data-trans] > .diapo.saliendo {
+  animation-duration: var(--diapo-duracion);
+  animation-timing-function: var(--curva-diapo);
+  animation-fill-mode: both;
+}
+
+/* 1. PROFUNDIDAD — la portada. La página actual se aleja y la nueva llega
+      desde delante, como un acercamiento. */
+#contenido[data-trans="profundidad"] > .entrando { animation-name: profundidad-entra; }
+#contenido[data-trans="profundidad"] > .saliendo { animation-name: profundidad-sale; }
+@keyframes profundidad-entra {
+  from { opacity: 0; transform: scale(1.08); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes profundidad-sale {
+  to { opacity: 0; transform: scale(0.88); }
+}
+
+/* 2. DESLIZAR — la nueva empuja desde el lado; la vieja se retira más
+      despacio (paralaje) y se apaga. */
+#contenido[data-trans="deslizar"] > .entrando { animation-name: deslizar-entra; }
+#contenido[data-trans="deslizar"] > .saliendo { animation-name: deslizar-sale; }
+@keyframes deslizar-entra {
+  from { transform: translate3d(calc(var(--dir) * 100%), 0, 0); }
+  to   { transform: none; }
+}
+@keyframes deslizar-sale {
+  to { opacity: 0.2; transform: translate3d(calc(var(--dir) * -30%), 0, 0); }
+}
+
+/* 3. BARRIDO — un corte vertical recorre la pantalla y descubre la nueva;
+      la vieja se hunde un poco debajo. */
+#contenido[data-trans="barrido"] > .entrando { animation-name: barrido-entra; }
+#contenido[data-trans="barrido"][data-dir="atras"] > .entrando { animation-name: barrido-entra-atras; }
+#contenido[data-trans="barrido"] > .saliendo { animation-name: hundirse; }
+@keyframes barrido-entra {
+  from { clip-path: inset(0 0 0 100%); transform: translate3d(4%, 0, 0); }
+  to   { clip-path: inset(0); transform: none; }
+}
+@keyframes barrido-entra-atras {
+  from { clip-path: inset(0 100% 0 0); transform: translate3d(-4%, 0, 0); }
+  to   { clip-path: inset(0); transform: none; }
+}
+
+/* 4. CUBO — las dos páginas son caras de un cubo que gira. El eje de cada
+      una está en la arista que comparten, y cambia de lado hacia atrás. */
+#contenido[data-trans="cubo"] > .entrando { animation-name: cubo-entra; transform-origin: 0% 50%; }
+#contenido[data-trans="cubo"] > .saliendo { animation-name: cubo-sale;  transform-origin: 100% 50%; }
+#contenido[data-trans="cubo"][data-dir="atras"] > .entrando { transform-origin: 100% 50%; }
+#contenido[data-trans="cubo"][data-dir="atras"] > .saliendo { transform-origin: 0% 50%; }
+@keyframes cubo-entra {
+  from { opacity: 0.35; transform: translate3d(calc(var(--dir) * 100%), 0, 0) rotateY(calc(var(--dir) * 90deg)); }
+  50%  { transform: translate3d(calc(var(--dir) * 50%), 0, -200px) rotateY(calc(var(--dir) * 45deg)); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes cubo-sale {
+  50%  { transform: translate3d(calc(var(--dir) * -50%), 0, -200px) rotateY(calc(var(--dir) * -45deg)); }
+  to   { opacity: 0.35; transform: translate3d(calc(var(--dir) * -100%), 0, 0) rotateY(calc(var(--dir) * -90deg)); }
+}
+
+/* 5. CORTINA — la nueva se abre desde el centro hacia los dos lados. */
+#contenido[data-trans="cortina"] > .entrando { animation-name: cortina-entra; }
+#contenido[data-trans="cortina"] > .saliendo { animation-name: hundirse; }
+@keyframes cortina-entra {
+  from { clip-path: inset(0 50% 0 50%); }
+  to   { clip-path: inset(0); }
+}
+
+/* 6. IRIS — un círculo crece desde el borde por el que se avanza. Repite a
+      escala de página el gesto del cambio de tema. */
+#contenido[data-trans="iris"] > .entrando { animation-name: iris-entra; }
+#contenido[data-trans="iris"] > .saliendo { animation-name: hundirse; }
+@keyframes iris-entra {
+  from { clip-path: circle(0% at calc(50% + var(--dir) * 50%) 50%); }
+  to   { clip-path: circle(150% at calc(50% + var(--dir) * 50%) 50%); }
+}
+
+/* Salida común de las tres que descubren por encima: la vieja se queda
+   debajo, se encoge un poco y se apaga. */
+@keyframes hundirse {
+  to { opacity: 0.4; transform: scale(0.95); }
+}
+
+/* ----------------------- PÍLDORA DE CONTROLES -----------------------
+   Contador · una marca por diapositiva · flechas. Flota abajo al centro;
+   las diapositivas reservan su alto (--diapo-hueco-pie) para no quedar
+   tapadas al final. */
+.diapo-controles {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  z-index: var(--z-barra);
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.35rem 0.4rem 0.35rem 1.1rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--barra-fondo-opaca);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--sombra-suave);
+  transform: translateX(-50%);
+}
+body[data-armazon="sidebar"] .diapo-controles { left: calc(50% + var(--sidebar-w) / 2); }
+
+/* Flecha ↓ al principio de la píldora: solo aparece si la diapositiva tiene
+   más contenido abajo, y late despacio para que se note sin reclamar. */
+.diapo-mas {
+  display: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-left: -0.6rem;
+  border-radius: 50%;
+  background: var(--primario-tenue);
+  color: var(--primario-claro);
+  font-size: var(--txt-micro);
+}
+.diapo-controles.hay-mas .diapo-mas {
+  display: grid;
+  animation: diapo-mas-latido var(--ciclo-latido) ease-in-out infinite;
+}
+@keyframes diapo-mas-latido {
+  0%, 100% { transform: translateY(-1px); }
+  50%      { transform: translateY(2px); }
+}
+
+.diapo-contador {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: var(--txt-menudo);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--texto-tenue);
+}
+.diapo-num {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  color: var(--texto-fuerte);
+}
+.diapo-nombre {
+  margin-left: 0.45rem;
+  padding-left: 0.8rem;
+  border-left: 1px solid var(--borde);
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.diapo-marcas {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.diapo-marcas button {
+  display: block;
+  width: 18px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+/* La marca visible es una raya de 3px dentro de un botón de 22px de alto:
+   la zona pulsable no puede medir lo que mide la raya. */
+.diapo-marcas button::before {
+  content: "";
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--borde-vivo);
+  opacity: 0.5;
+  transform-origin: left center;
+  transition:
+    opacity var(--medio) var(--curva-suave),
+    transform var(--medio) var(--curva-salida);
+}
+.diapo-marcas button.is-active { width: 34px; }
+.diapo-marcas button.is-active::before { background: var(--degradado); opacity: 1; }
+.diapo-marcas button:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+
+.diapo-flechas { display: flex; gap: 0.3rem; }
+.diapo-flechas button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--texto);
+  font-size: var(--txt-menudo);
+  cursor: pointer;
+  transition:
+    color var(--rapido) var(--curva-suave),
+    border-color var(--rapido) var(--curva-suave),
+    background-color var(--rapido) var(--curva-suave),
+    transform var(--rapido) var(--curva-salida);
+}
+.diapo-flechas button:active:not(:disabled) { transform: translateY(var(--hunde)); }
+.diapo-flechas button:disabled { opacity: 0.35; cursor: default; }
+.diapo-flechas button:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+@media (hover: hover) {
+  .diapo-marcas button:hover::before { opacity: 1; transform: scaleY(1.6); }
+  .diapo-flechas button:hover:not(:disabled) {
+    color: var(--texto-fuerte);
+    border-color: var(--borde-vivo);
+    background: var(--lavado);
+  }
+}
