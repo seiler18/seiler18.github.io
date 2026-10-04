@@ -2,7 +2,7 @@
 
 - **Fecha:** 2026-10-04
 - **Estado:** completado
-- **Commits:** pendiente de commit
+- **Commits:** `9082ff4`
 
 ## Contexto
 El mismo pedido y la misma decisión que en `sistemas-gestion` (su hito

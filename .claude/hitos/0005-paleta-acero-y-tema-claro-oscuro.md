@@ -2,7 +2,7 @@
 
 - **Fecha:** 2026-10-04
 - **Estado:** completado
-- **Commits:** pendiente de commit
+- **Commits:** `9082ff4`
 
 ## Contexto
 El hub llevaba la paleta «Núcleo» (índigo eléctrico, lavanda y aguamarina neón
