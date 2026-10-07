@@ -23,7 +23,7 @@
       <!-- SECUENCIA DE ENTRADA DE LA PORTADA. El atributo data-anim-secuencia
            escalona a los hijos 70ms cada uno (src/lib/reveal.js), y el orden
            del HTML es el orden en el que se quiere que se lean: antetítulo →
-           nombre → lema → bajada → botones → cifras. Es lo mismo que se
+           lema (h1) → bajada → botones → cifras. Es lo mismo que se
            leería sin animación, solo que la página lo va marcando. Los seis a
            la vez —lo que había antes, sin animación ninguna en la portada—
            obligan al visitante a decidir por dónde empieza.
@@ -34,8 +34,7 @@
            línea siguiente y no dice nada del comentario. -->
       <div class="hero-contenido" data-anim-secuencia>
         ${r.antetitulo?`<p class="hero-antetitulo" data-anim="subir">${r.antetitulo}</p>`:``}
-        <h1 class="hero-titulo" data-anim="subir">${e.nombre}</h1>
-        ${e.lema?`<p class="hero-lema" data-anim="subir">«${e.lema}»</p>`:``}
+        <h1 class="hero-titulo" data-anim="subir">${e.lema}</h1>
         <p class="hero-bajada" data-anim="subir">${r.bajada}</p>
 
         <div class="hero-acciones" data-anim="subir">${t}</div>
