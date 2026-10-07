@@ -53,7 +53,7 @@ export function renderHero() {
       <!-- SECUENCIA DE ENTRADA DE LA PORTADA. El atributo data-anim-secuencia
            escalona a los hijos 70ms cada uno (src/lib/reveal.js), y el orden
            del HTML es el orden en el que se quiere que se lean: antetítulo →
-           nombre → lema → bajada → botones → cifras. Es lo mismo que se
+           lema (h1) → bajada → botones → cifras. Es lo mismo que se
            leería sin animación, solo que la página lo va marcando. Los seis a
            la vez —lo que había antes, sin animación ninguna en la portada—
            obligan al visitante a decidir por dónde empieza.
@@ -64,8 +64,7 @@ export function renderHero() {
            línea siguiente y no dice nada del comentario. -->
       <div class="hero-contenido" data-anim-secuencia>
         ${hero.antetitulo ? `<p class="hero-antetitulo" data-anim="subir">${hero.antetitulo}</p>` : ''}
-        <h1 class="hero-titulo" data-anim="subir">${site.nombre}</h1>
-        ${site.lema ? `<p class="hero-lema" data-anim="subir">«${site.lema}»</p>` : ''}
+        <h1 class="hero-titulo" data-anim="subir">${site.lema}</h1>
         <p class="hero-bajada" data-anim="subir">${hero.bajada}</p>
 
         <div class="hero-acciones" data-anim="subir">${botones}</div>
