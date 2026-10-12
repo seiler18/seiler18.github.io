@@ -27,16 +27,9 @@ export const proyectos = {
     {
       titulo: 'FinanzasMaker',
       texto:
-        'Gastos, ingresos e inversiones por día, mes y año, leídos de los avisos que mandan los bancos por correo: sin pedir claves bancarias. Un Apps Script registra cada movimiento en una hoja de Google y borra el correo; la página suma, compara y da consejos de ahorro.',
+        'Gastos, ingresos e inversiones por día, mes y año, leídos de los avisos de los bancos —el correo y las notificaciones del celular—: sin pedir claves bancarias. Base en Supabase con acceso por fila y registro cerrado; un trabajador en Apps Script lee Gmail y registra cada movimiento; la página suma, compara y da consejos de ahorro, y una segunda página lleva la cartera de acciones (costo promedio móvil, dividendos y alertas).',
       icon: 'fa-solid fa-wallet',
       enlace: { label: 'Ver la demo', href: 'https://seiler18.github.io/FinanzasMaker/', externo: true },
-    },
-    {
-      titulo: 'Gestor de acciones',
-      texto:
-        'Dashboard de una cartera de acciones: posiciones abiertas, resultado por activo, dividendos por mes, cambio de dólares y alertas. La hoja de Google importa sola los correos de la corredora y la página lee una API de solo lectura en Apps Script.',
-      icon: 'fa-solid fa-chart-line',
-      enlace: { label: 'Ver la demo', href: 'https://seiler18.github.io/gestor-acciones/', externo: true },
     },
     {
       titulo: 'Regenera Market',
