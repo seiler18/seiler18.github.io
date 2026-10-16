@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.seiler18.finanzasmaker",
+      "sha256_cert_fingerprints": ["9E:B2:DE:B5:83:78:A4:C9:E5:77:19:05:12:E5:BA:9B:BC:98:9D:89:2F:85:92:65:57:5E:06:EF:97:B5:61:7D"]
+    }
+  }
+]
