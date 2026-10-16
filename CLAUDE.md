@@ -88,6 +88,10 @@ que van en strings de HTML y los PDFs **no** los ve, y por eso
 `scripts/copy-assets.js` los copia al `dist/` después del build.
 → Si añades una carpeta que deba llegar a producción, decláralo ahí.
 
+`public/.well-known/assetlinks.json` es de otro proyecto: declara a la app
+Android de FinanzasMaker como dueña del dominio, para que muestre la página
+sin barra de URL (hito 0007). Se publica solo, desde la raíz; no se borra.
+
 ### Deploy
 
 `git push origin main` → Actions → `npm ci && npm run build` → `dist/`

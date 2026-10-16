@@ -18,6 +18,7 @@ No se duplica información entre ellos. Para añadir un hito, ver la skill
 
 | # | Fecha | Título | Estado |
 |---|---|---|---|
+| [0007](0007-assetlinks-para-la-app-de-finanzasmaker.md) | 2026-10-16 | El dominio declara a la app Android de FinanzasMaker | completado |
 | [0006](0006-ondas-y-diapositivas-en-escritorio.md) | 2026-10-04 | Ondas en la portada y diapositivas en escritorio | completado |
 | [0005](0005-paleta-acero-y-tema-claro-oscuro.md) | 2026-10-04 | Paleta «Acero» y tema claro / oscuro | completado |
 | [0004](0004-efectos-de-interaccion.md) | 2026-10-03 | Efectos de interacción en el hub | completado |
