@@ -33,7 +33,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Sin esto, el checkout deja el token de Actions escrito en
           # .git/config, donde lo puede leer cualquier paso posterior — o el
