@@ -32,11 +32,11 @@ export const proyectos = {
       enlace: { label: 'Ver la demo', href: 'https://seiler18.github.io/FinanzasMaker/', externo: true },
     },
     {
-      titulo: 'Regenera Market',
+      titulo: 'Seregenera',
       texto:
-        'Marketplace multi-proveedor de productos, experiencias y servicios regenerativos para el turismo colombiano: catálogo sobre Postgres, registro con segundo factor, panel de administración y comunidad. Next.js, Supabase y Vercel.',
+        'Marketplace multi-proveedor de productos, experiencias y servicios regenerativos para el turismo colombiano: catálogo sobre MariaDB, registro con segundo factor, panel de administración y comunidad. Next.js en un hosting Node.js de Hostinger.',
       icon: 'fa-solid fa-leaf',
-      enlace: { label: 'Ver el marketplace', href: 'https://regenera-market.vercel.app/', externo: true },
+      enlace: { label: 'Ver el marketplace', href: 'https://seregenera.com/', externo: true },
     },
     {
       titulo: 'VentasMaker',
