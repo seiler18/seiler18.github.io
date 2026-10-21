@@ -27,7 +27,7 @@ export const proyectos = {
     {
       titulo: 'FinanzasMaker',
       texto:
-        'Gastos, ingresos e inversiones por día, mes y año, leídos de los avisos de los bancos —el correo y las notificaciones del celular—: sin pedir claves bancarias. Base en Supabase con acceso por fila y registro cerrado; un trabajador en Apps Script lee Gmail y registra cada movimiento; la página suma, compara y da consejos de ahorro, y una segunda página lleva la cartera de acciones (costo promedio móvil, dividendos y alertas).',
+        'Gastos, ingresos e inversiones por día, mes y año, leídos de los avisos de los bancos: sin pedir claves bancarias. Una app Android propia escucha las notificaciones de los bancos y las vuelve movimientos, y también muestra el resumen y los consejos y permite anotar, editar y decidir lo que queda por revisar. Base en Supabase con acceso por fila y registro cerrado; un trabajador en Apps Script lee Gmail solo para Fintual y los precios. La página suma, compara y da consejos de ahorro, y una segunda página lleva la cartera de acciones (costo promedio móvil, dividendos y alertas).',
       icon: 'fa-solid fa-wallet',
       enlace: { label: 'Ver la demo', href: 'https://seiler18.github.io/FinanzasMaker/', externo: true },
     },
