@@ -50,7 +50,7 @@ export const proyectos = {
     {
       titulo: 'Vigía',
       texto:
-        'App de escritorio para Windows: una franja a todo lo ancho de la pantalla con la temperatura de la GPU y del CPU, los FPS y la RAM mientras juegas, que avisa antes de que el equipo se sobrecaliente. Sin drivers, sin administrador y sin inyectarse en el juego. C#, WPF y .NET 10.',
+        'App de escritorio para Windows: una franja en cualquier borde de la pantalla con la temperatura de la GPU y del CPU, los FPS y la RAM mientras juegas, que avisa antes de que el equipo se sobrecaliente. Personalizable y sin tapar otras ventanas. Sin drivers, sin administrador y sin inyectarse en el juego. C#, WPF y .NET 10.',
       icon: 'fa-solid fa-temperature-half',
       enlace: { label: 'Ver y descargar', href: 'https://seiler18.github.io/Curriculo/projects/Vigia/index.html', externo: true },
     },
