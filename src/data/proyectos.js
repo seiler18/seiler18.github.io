@@ -19,7 +19,9 @@ export const proyectos = {
   id: 'proyectos',
   eyebrow: 'Ya en producción',
   titulo: 'Proyectos publicados',
-  subtitulo: 'Trabajo real, funcionando hoy. Cada tarjeta abre el sitio en vivo.',
+  // Ya no «cada tarjeta abre el sitio en vivo»: Vigía es una app de
+  // escritorio y su tarjeta abre la ficha con la descarga.
+  subtitulo: 'Trabajo real, funcionando hoy.',
   filtro: false,
   densidad: 'amplia',
 
@@ -44,6 +46,13 @@ export const proyectos = {
         'Catálogo, punto de venta e inventario para una tienda de Puerto Montt, sin mensualidad: pedido por WhatsApp, venta con lector de códigos, reportes y etiquetas. Front estático y Google Sheets con Apps Script como base de datos.',
       icon: 'fa-solid fa-cash-register',
       enlace: { label: 'Ver el catálogo', href: 'https://seiler18.github.io/VentasMaker/', externo: true },
+    },
+    {
+      titulo: 'Vigía',
+      texto:
+        'App de escritorio para Windows: una franja a todo lo ancho de la pantalla con la temperatura de la GPU y del CPU, los FPS y la RAM mientras juegas, que avisa antes de que el equipo se sobrecaliente. Sin drivers, sin administrador y sin inyectarse en el juego. C#, WPF y .NET 10.',
+      icon: 'fa-solid fa-temperature-half',
+      enlace: { label: 'Ver y descargar', href: 'https://seiler18.github.io/Curriculo/projects/Vigia/index.html', externo: true },
     },
     {
       titulo: 'Sitio corporativo Opciones S.A.',
