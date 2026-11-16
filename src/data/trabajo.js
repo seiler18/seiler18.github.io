@@ -31,7 +31,7 @@ export const trabajo = {
     {
       titulo: 'Currículum y portafolio',
       texto:
-        'La trayectoria completa: experiencia, certificaciones verificables y el portafolio de proyectos de desarrollo. Con el CV descargable en español y en inglés.',
+        'La trayectoria completa: desarrollo sobre ERP, datos y automatización para gerencia, certificaciones verificables y el portafolio de proyectos. Con el CV descargable en español y en inglés.',
       icon: 'fa-solid fa-id-card',
       enlace: { label: 'Ver el currículum', href: 'https://seiler18.github.io/Curriculo/', externo: true },
     },

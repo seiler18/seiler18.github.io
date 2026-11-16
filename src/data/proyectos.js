@@ -55,6 +55,13 @@ export const proyectos = {
       enlace: { label: 'Ver y descargar', href: 'https://seiler18.github.io/Curriculo/projects/Vigia/index.html', externo: true },
     },
     {
+      titulo: 'ISO Toolkit',
+      texto:
+        'Material abierto para implementar un sistema de gestión ISO integrado en una pyme: mapa Anexo SL de seis normas, los 93 controles del Anexo A de ISO/IEC 27001 y un generador en Python de la estructura del sistema, la lista maestra y la Declaración de Aplicabilidad. Licencia CC BY-SA 4.0.',
+      icon: 'fa-solid fa-list-check',
+      enlace: { label: 'Ver en GitHub', href: 'https://github.com/seiler18/iso-toolkit', externo: true },
+    },
+    {
       titulo: 'Sitio corporativo Opciones S.A.',
       texto:
         'Nuevo sitio de una empresa chilena de soluciones TI y data center: tema propio de WordPress sin plugins, formulario con protección anti-spam y bandeja de mensajes, y una guía de entrega para el área de Sistemas.',
